@@ -1,123 +1,56 @@
 # Documentation Standards
 
-*Last updated: 2026-08-06. Required doc-comment styles per language, Markdown conventions, and where a given kind of fact belongs. Complements [`.agent/rules/documentation.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/rules/documentation.md) (the authoritative, terse version an AI coding assistant reads) with the fuller rationale for humans.*
+*Last updated: 2026-08-14. Conventions for product, engineering, and assistant-facing documentation in peptide-site.*
 
 ---
 
 ## Table of Contents
 
-- [General Principles](#general-principles)
-- [Kotlin (KDoc)](#kotlin-kdoc)
-- [Swift (DocC)](#swift-docc)
-- [TypeScript / Vue (`docs/website`)](#typescript-vue-docswebsitevue)
-- [Markdown Files](#markdown-files)
+- [Principles](#principles)
 - [Where a Fact Belongs](#where-a-fact-belongs)
-- [Enforcement](#enforcement)
+- [Markdown Conventions](#markdown-conventions)
+- [Decisions, Roadmap Notes, and Comments](#decisions-roadmap-notes-and-comments)
+- [Relationship to `.agent/`](#relationship-to-agent)
 
 ---
 
-## General Principles
+## Principles
 
-1. **Document the why, not the what.** A well-named function or class already says what it does; a doc comment earns its place only when it explains a non-obvious constraint, an invariant, or a piece of domain knowledge (e.g. why the `GameLoop` uses a plain `Thread` instead of coroutines — see [`.agent/rules/kotlin.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/rules/kotlin.md)) that can't be inferred from the signature.
-2. **One source of truth.** If a fact could live in a doc comment or a separate Markdown doc, put it in exactly one place and link the other to it, rather than duplicating and letting the copies drift.
-3. **Docs mirror what's actually built.** [`docs/index.md`](index.md) and `README.md` describe what exists today; unfinished systems are marked `> **TODO:**` rather than written as if shipped — see [`.agent/AGENTS.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/AGENTS.md) §7 "Known Constraints" for the current example.
-4. **Incremental coverage.** Don't block a PR over missing doc comments in code it doesn't touch — focus on new or substantially modified public APIs.
-
----
-
-## Kotlin (KDoc)
-
-Every new public class/function under `android/app/src/main/java/com/acfharbinger/mobilefortress/engine/` and `ui/` needs a KDoc comment (per [`.agent/AGENTS.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/AGENTS.md) §5).
-
-### Format
-
-```kotlin
-/**
- * Recomputes the Flow Field vector grid from the current tower/obstacle layout.
- *
- * Runs a single grid-wide Dijkstra pass from the goal cell outward — see
- * [docs/moon/roadmaps/gameplay.md] for the algorithm this mirrors from the
- * planned C++ core. Safe to call every frame a placement changes; it is
- * *not* safe to call from the render path (see [game_loop_performance.md]).
- *
- * @param grid the current traversal-cost grid, mutated in place.
- * @return the recomputed per-cell direction vectors.
- */
-fun recomputeFlowField(grid: CostGrid): VectorField { ... }
-```
-
-- First line: short imperative summary.
-- Blank line, then body prose explaining *why*, with `[brackets]` cross-references to other symbols or docs where useful.
-- `@param`/`@return` only when the parameter/return value isn't self-explanatory from its name and type.
-- No restating the type signature in prose.
-
-### Enforcement
-
-`ktlintCheck` catches formatting; missing KDoc on new public APIs is a review-time check, not (yet) an automated gate — see [`.agent/rules/code_review.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/rules/code_review.md) severity tiers (MEDIUM: "Missing KDoc/doc-comments on public `engine/`/`Engine/`-equivalent classes").
-
----
-
-## Swift (DocC)
-
-Every new public type/function under `ios/MyGame/Engine/`, `ios/MyGame/Core/`, and `ios/MyGame/Scenes/` needs a `///` doc comment (DocC-compatible).
-
-### Format
-
-```swift
-/// Clamps the per-frame delta before advancing gameplay state.
-///
-/// SpriteKit already drives `update(_:)` off the display link, so there is
-/// no hand-rolled accumulator to write — but an unclamped delta after a
-/// backgrounding gap or a debugger pause would simulate minutes of missed
-/// time in one call. Mirrors Android's catch-up cap; see
-/// `game_loop_performance.md`.
-///
-/// - Parameter rawDelta: unclamped seconds since the previous frame.
-/// - Returns: `rawDelta` clamped to `GameConstants.maxFrameDelta`.
-func clampedDelta(_ rawDelta: TimeInterval) -> TimeInterval { ... }
-```
-
-- `///` triple-slash comments, not `/** ... */` block comments — matches Xcode's Quick Help and DocC rendering.
-- `- Parameter`/`- Returns` markers only when non-obvious.
-- No force-unwraps (`!`) in example code within doc comments — they're read as implicitly endorsed style (see [`.agent/rules/swift.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/rules/swift.md)).
-
----
-
-## TypeScript / Vue (`docs/website`)
-
-- Exported functions in `src/composables/*.ts` get a `/** ... */` TSDoc-style comment when their behavior isn't obvious from the name and type signature — `useMarkdown.ts`'s `extractToc`/`renderMarkdown`, for example, are self-explanatory and don't need one; `resolveHref`-style link-resolution logic (if reintroduced) would.
-- `.vue` Single-File Components use `<script setup lang="ts">` — prefer well-named `computed`/functions over comments explaining what a block of template markup does.
-- `scripts/generate-nav.mjs` is the one file in this stack that *does* carry a substantial header comment, because it encodes a non-obvious two-source-of-truth design (`mkdocs.yml` nav + hand-curated `EXTRA_SECTIONS`) that isn't inferable from the code alone.
-
----
-
-## Markdown Files
-
-- **Title + one-line context.** Every doc under `docs/` starts with an `# H1` title; long-lived reference docs (this one, `TROUBLESHOOTING.md`, `DEPENDENCY_POLICY.md`, `BENCHMARKS.md`) follow it with an italicized "Last updated: YYYY-MM-DD. \<one-sentence scope\>" line so staleness is visible at a glance.
-- **Table of contents for anything past ~100 lines.** Manually maintained (no TOC-generation tooling in this repo) — keep it in sync when adding/removing a `##` heading.
-- **Relative links, repo-root-relative when crossing top-level directories.** Prefer `[text](../other/file.md)` over an absolute GitHub URL when linking within the repository — the [`docs/website`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/tree/main/docs/website) site and GitHub's own file browser both resolve these correctly; absolute `github.com/...` URLs are reserved for linking to a *specific commit/blob* (e.g. the "Edit on GitHub" link the docs site generates) or to another repository entirely.
-- **Mermaid for diagrams, not ASCII art, when the diagram has more than ~4 nodes.** Both [`docs/mkdocs.yml`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/docs/mkdocs.yml) (via `mkdocs serve`) and `docs/website` render Mermaid fences (` ```mermaid `) live.
-- **`$...$` / `$$...$$` for math**, rendered via KaTeX in `docs/website` — used throughout [`docs/design/game_design_document.md`](design/game_design_document.md) for the Flow Field, DDA, and monetization-bandit formulas.
-
----
+- Write for this repository as it exists: a static research-peptide storefront, not a general e-commerce backend or medical guidance site.
+- Keep research-use-only, age-gate, EU27 scope, and no-dosing/no-medical-use constraints accurate wherever they apply.
+- State uncertainty plainly. Do not invent Firebase project details, checkout provider configuration, lot-specific COAs, CI implementation details, or future features.
+- Prefer one authoritative location for a fact and link to it instead of duplicating it. Update documentation in the same change when behavior, a boundary, or an enduring decision changes.
 
 ## Where a Fact Belongs
 
-| Kind of fact | Lives in |
+| Information | Authoritative home |
 | --- | --- |
-| A module boundary or responsibility split | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) |
-| A significant, hard-to-reverse decision (rendering approach, save-format, backend adoption) | A new [`docs/adr/`](adr/0001-record-architecture-decisions.md) record |
-| Shipped, user-visible change | [`docs/moon/CHANGELOG.md`](moon/CHANGELOG.md) |
-| Planned, not-yet-built work | The relevant [`docs/moon/roadmaps/*.md`](moon/ROADMAP.md) |
-| Project-specific terminology | [`docs/GLOSSARY.md`](GLOSSARY.md) |
-| A recurring build/runtime failure and its fix | [`docs/TROUBLESHOOTING.md`](TROUBLESHOOTING.md) |
-| A dependency version constraint or upgrade rule | [`docs/DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md) |
-| Game design intent (setting, units, economy, aesthetics) | [`docs/design/`](design/game_design_document.md) |
+| Project overview, current stack, local commands, and contributor orientation | `README.md` |
+| Durable engineering, product, operational, and troubleshooting reference | `docs/` |
+| Instructions an AI coding assistant must follow while modifying this repository | `.agent/AGENTS.md`, then the applicable `.agent/rules/`, workflows, or prompts |
+| Non-obvious reason, constraint, or invariant local to code | An inline comment beside that code |
+| Public API or exported utility behavior not clear from type and name | A concise TSDoc comment near the export |
 
----
+`README.md` should stay an entry point, not become a complete specification. Put detailed policy, architecture rationale, setup diagnostics, and recurring operational knowledge in `docs/`. Do not use comments to restate obvious JSX, types, or control flow.
 
-## Enforcement
+## Markdown Conventions
 
-- `ktlintCheck` / `lint` (Android) and Xcode's build warnings (iOS) catch formatting issues but not doc-comment *presence* — that's a code-review-time check per [`.agent/rules/code_review.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/rules/code_review.md).
-- `docs/website`'s `npm run build` runs `vue-tsc` type-checking, which indirectly catches TSDoc `@param`/`@returns` tags that no longer match a changed signature.
-- `scripts/generate-nav.mjs` fails the `docs-website` CI job outright on a duplicate route or a `mkdocs.yml` nav entry pointing at a missing file — a structural check, not a prose-quality one.
+- Start each long-lived document with one `#` title and a short italicized scope/last-updated line.
+- Use descriptive `##` and `###` headings, sentence-case prose, and relative links for repository content. Add a manually maintained table of contents when a document is long enough to benefit from one.
+- Use fenced code blocks with a language identifier where applicable. Commands must be copyable and must say which directory they run from when that matters.
+- Separate confirmed behavior from proposals. Label planned work as planned; label unavailable lab evidence as “documentation available on request” until real per-lot records exist.
+- Keep examples compliant with the site’s research-only posture. Do not introduce dosing, administration, therapeutic claims, or fabricated laboratory results.
+
+## Decisions, Roadmap Notes, and Comments
+
+Write an ADR for a significant, durable, and hard-to-reverse choice with alternatives or tradeoffs: for example, a change to static hosting, checkout architecture, account provider, catalog ownership model, or the boundary between Next and the Astro island. An ADR records the context, decision, consequences, and supersession path.
+
+Write a roadmap note for phased or unsettled work: the methodology primer before interactive comparison tools, full per-lot evidence once records exist, or an undecided shipping restriction beyond EU27. A roadmap note must not present planned work as shipped.
+
+Use inline comments only when code cannot express an important reason by itself, such as why a path is basePath-aware, why a Firebase call is client-only, or why an Astro island remains isolated from the storefront shell. Remove comments made obsolete by a code change.
+
+## Relationship to `.agent/`
+
+`docs/` is the human-readable, durable project record. `.agent/` is the operational instruction directory for AI-assisted work: it contains `AGENTS.md`, rules, workflows, prompts, and coordination material. The two may link to one another, but they serve different audiences.
+
+When a repository rule changes, update `.agent/` if assistants need to follow it and update `docs/` if humans need the enduring rationale or reference. Do not bury product decisions only in an assistant prompt, and do not make `docs/` a copy of every assistant workflow. If they disagree, flag and resolve the conflict rather than choosing silently.

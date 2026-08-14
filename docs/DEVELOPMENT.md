@@ -1,80 +1,152 @@
 # Development Guide
 
-This is a two-client monorepo: Android/Kotlin under [`android/`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/tree/main/android) and iOS/Swift under [`ios/`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/tree/main/ios), sharing raw assets and a documented spec under [`core/`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/tree/main/core) (see `core/README.md` for what's actually shared vs. aspirational).
+Local setup for **peptide-site** (PepCore Labs): a Next.js 14 + React 18 + TypeScript 5 storefront with Tailwind 3, statically exported to GitHub Pages. This is not a mobile, desktop, or backend repo.
 
-## Prerequisites (both platforms)
+The storefront is mid-port. `npm run dev` / `npm run build` are the Next.js toolchain; the **currently shipping UI** is still the vanilla skeleton (`index.html`, `src/script.js`, `src/products.js`, `src/style.css`) until `app/` exists. Both are edited in this same tree.
 
-- [`just`](https://github.com/casey/just) as the command runner.
-- `pre-commit` (`pip install pre-commit && pre-commit install`).
+## Prerequisites
 
-## Android (`android/`)
+- [Node.js](https://nodejs.org/) **20+** and npm 10+ (CI uses Node 20; `package-lock.json` is lockfile v3).
+- Git.
+- Optional: [pre-commit](https://pre-commit.com/) (`pip install pre-commit`) for the repo hooks.
+- Optional: Python 3.11+ only if you will run [`scripts/make_vials.py`](../scripts/make_vials.py) or the [`git/`](../git/) automation. The site itself does not need Python. There is no `notebooks/` workspace.
 
-- Android Studio (Ladybug or newer) or a standalone JDK 17 + Android SDK cmdline-tools install.
-- Android SDK Platform 35, Build-Tools 35.0.0.
-
-```bash
-git clone https://github.com/<org>/<repo>.git
-cd <repo>
-cp .env.example .env       # only needed if you use the optional backend
-pip install pre-commit && pre-commit install
-just --list
-```
-
-Open `android/` in Android Studio ("Open" → select `android/`, which contains `settings.gradle.kts`) and let it sync Gradle. Or from the CLI:
+## Clone and run
 
 ```bash
-./gradlew tasks
+git clone https://github.com/ACFHarbinger/peptide-site.git
+cd peptide-site
+npm install
+npm run dev
 ```
 
-### Running the Android app
+The Next.js dev server is `http://localhost:3000/` with an **empty** `basePath`. Production and the static export use `basePath: /peptide-site`.
 
 ```bash
-just install     # ./gradlew installDebug onto a connected device/emulator
+npm run build     # next build → out/  (postbuild symlinks out/peptide-site → .)
+npm start         # serve the export (npx serve out) — production-like, including /peptide-site
+npm run lint      # ESLint (eslint-config-next via stack/eslint/)
+npx tsc --noEmit  # TypeScript 5, strict
 ```
 
-Or run/debug directly from Android Studio's device toolbar.
+To view the **legacy** one-page skeleton without Next, open `index.html` through any static file server; it reads `src/script.js` / `src/products.js` / `src/style.css` and `assets/svgs/`.
 
-### Android emulator setup
+## Dev container
 
-```bash
-sdkmanager "system-images;android-35;google_apis;x86_64"
-avdmanager create avd -n mobile-fortress -k "system-images;android-35;google_apis;x86_64"
-emulator -avd mobile-fortress
-```
+[`.devcontainer/`](../.devcontainer/) is a Node.js 20 (Debian bookworm) container with Git, Python 3, pip, and `pre-commit`.
 
-## iOS (`ios/`)
+1. Install the VS Code / compatible **Dev Containers** extension.
+2. Open the repo and run **Dev Containers: Reopen in Container**.
+3. `postCreateCommand` runs `npm install && pre-commit install`.
 
-**Requires a native macOS host with Xcode 15+.** There is no Linux devcontainer for iOS — Xcode and the iOS Simulator only run on macOS; see [`.devcontainer/README.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.devcontainer/README.md).
+Workspace path inside the container is `/workspaces/peptide-site`; processes run as the non-root `vscode` user. See [`.devcontainer/README.md`](../.devcontainer/README.md).
 
-```bash
-open ios/MyGame.xcodeproj
-```
+## Environment variables
 
-Select the `MyGame` scheme and an iOS Simulator destination, then Run (⌘R). From the CLI:
+The static export has **no runtime server env**. Anything the browser needs is inlined at build time as `NEXT_PUBLIC_*`. Nothing secret belongs there — see [`SECURITY.md`](SECURITY.md).
 
-```bash
-just ios-build     # xcodebuild ... -destination 'generic/platform=iOS Simulator' build
-just ios-test       # xcodebuild ... test
-```
+**Today** the vanilla storefront needs no env file. Firebase Auth and hosted Stripe checkout are confirmed for v1 but **not wired yet**; no `.env.example` is authoritative.
 
-No SwiftLint configuration ships by default with this project — add a `.swiftlint.yml` under `ios/` and wire it into `tools/validation/justfile`'s `ios-check` recipe if you want stricter enforcement than the compiler's own warnings.
+When those integrations land, expect build-time public config along these lines (exact names and values are **not decided** — do not invent project IDs or Payment Link URLs):
 
-## Containerized Dev Environment
-
-Open the repo in VS Code and choose "Reopen in Container" — see [`.devcontainer/devcontainer.json`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.devcontainer/devcontainer.json). This container only provisions the **Android** toolchain (Android SDK, JDK 17, emulator deps); it cannot build or run the iOS app. The emulator itself also needs `/dev/kvm` passed through and is best run on the host, not inside the container, for acceptable performance.
-
-## Common Tasks
-
-| Task | Command | Platform |
+| Variable | Purpose | Secret? |
 | --- | --- | --- |
-| Build debug APK | `just apk` | Android |
-| Run unit tests | `just unit-test` | Android |
-| Run instrumented tests | `just test-instrumented` | Android |
-| Lint (ktlint + Android Lint) | `just lint-check` | Android |
-| Build a signed release bundle | `just assemble-release` | Android |
-| Install debug build on a device | `just install` | Android |
-| Build for the iOS Simulator | `just ios-build` | iOS |
-| Run the XCTest suite | `just ios-test` | iOS |
-| Analyze iOS sources | `just ios-check` | iOS |
-| Archive a Release build (unsigned) | `just ios-archive` | iOS |
-| Start the optional backend stack | `just docker-up` | shared |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase web app config | No (public client config) |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase Auth domain | No |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase project | No |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app id | No |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe.js / Payment Links publishable key (`pk_…`) | No |
+| Hosted Payment Link URL(s) | Redirect target(s) for checkout v1 | No (they are public URLs) |
+
+Never add `sk_…`, webhook signing secrets, Firebase service-account JSON, or GitHub tokens to any file Next.js will bundle. Tokens for [`git/`](../git/) automation (`PROJECT_ID`, `GITHUB_TOKEN`, `GEMINI_API_KEY`) are **shell/CI secrets only**, not Next.js env.
+
+GitHub Actions already uses Node 20. Which secrets the Firebase/Stripe builds will consume in `deploy.yml` is not decided.
+
+## Adding or editing a product
+
+v1 catalog data is **typed TypeScript/JSON committed to the repo** and schema-validated in CI — not a CMS, not a spreadsheet. That typed module is part of the port; **until it exists, edit [`src/products.js`](../src/products.js)**.
+
+### Current vanilla shape (`src/products.js`)
+
+1. Pick a category key already in `CATS`:
+
+   | Key | Label |
+   | --- | --- |
+   | `glp1` | GLP-1 Agonists |
+   | `growth` | Growth Hormone & Antiaging |
+   | `cosmetic` | Cosmetic & Longevity |
+   | `healing` | Healing & Recovery |
+   | `weight-loss` | Advanced Weight Loss |
+   | `blends` | Specialty Blends & NAD+ |
+   | `essentials` | Lab Essentials |
+
+2. Append a `PRODUCTS` record:
+
+   ```js
+   {n: 'Display Name', c: 'healing', i: 'icon-slug', v: [['5mg × 10 vials', 131], ['10mg × 10 vials', 191]]}
+   ```
+
+   - `n` — name shown on the card.
+   - `c` — category key from `CATS`.
+   - `i` — icon slug. There must be `assets/svgs/<i>.svg`.
+   - `v` — variants: `[sizeLabel, priceEur]`. Prices are numbers (euro). The UI formats them.
+
+3. If the compound needs a new vial icon, generate it with `python scripts/make_vials.py` (see that script and [`assets/icons/README.md`](../assets/icons/README.md) for the icon vs. vial split). Do not commit a raster stand-in.
+
+4. **Do not** add per-lot COA files, invented purity figures, or lab names. The honest v1 evidence state is “documentation available on request.”
+
+5. Keep copy Research Use Only. No dosing, no human-use claims.
+
+When the typed catalog lands, the same fields move into schema-validated TS/JSON and CI will fail the build on an invalid record. Prefer adding the product in one commit and any new SVG in the same change.
+
+Shipping scope is **EU27**; there is no per-SKU country list to maintain.
+
+## Research island (Astro)
+
+Methodology content lives under `src/frameworks/astro/` and is configured in [`astro.config.mjs`](../astro.config.mjs) (`outDir: public/astro-island`, `base` derived from `SITE_BASE`).
+
+- v1: factual primer (what HPLC/MS results mean, how to read a COA, lab-context storage/handling). **No dosing.**
+- The island is a **separate build**. Do not import Astro components into `app/` or Redux into Astro.
+- After editing island sources, rebuild the island so `public/astro-island/` is up to date before `npm run build` / deploy. The exact npm script for the island build is not wired in root `package.json` yet — add one when the island sources land; do not invent a script name here.
+
+## Pre-commit and git hooks
+
+Two independent hook systems:
+
+### `pre-commit` (lint / types / file hygiene)
+
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files   # optional manual run
+```
+
+[`.pre-commit-config.yaml`](../.pre-commit-config.yaml) runs trailing-whitespace / JSON / YAML / merge-conflict checks, **ESLint** (`npm run lint`, blocking) on `src/` and `app/`, **`tsc --noEmit`** (advisory) on TypeScript, and **ruff** (blocking) / **mypy** (advisory) on the [`git/`](../git/) Python automation workspace.
+
+### `git/hooks` (ticket linking / board sync)
+
+```bash
+bash git/hooks/install.sh
+```
+
+This symlinks tracked `git/hooks/pre-commit` and `post-commit` into `.git/hooks/`. They validate `git/config/` JSON/YAML and (when `PROJECT_ID` / `GITHUB_TOKEN` are set) link commits to the GitHub Project board. See [`git/README.md`](../git/README.md). They are optional for storefront work.
+
+Branch from `main` as `feature/<short-description>` or `fix/<short-description>`. Prefer [Conventional Commits](https://www.conventionalcommits.org/) (`feat(catalog): …`, `fix(cart): …`, `docs(dev): …`). Do not commit secrets. Do not commit from agent sessions unless a human asked for a commit — this doc does not require one.
+
+## Common tasks
+
+| Task | Command |
+| --- | --- |
+| Dev server | `npm run dev` |
+| Production static export | `npm run build` |
+| Serve the export locally | `npm start` |
+| Lint | `npm run lint` |
+| Typecheck | `npx tsc --noEmit` |
+| Unit tests | `npm run test:unit` |
+| Integration tests | `npm run test:integration` |
+| All Vitest | `npm test` / `npm run test:watch` |
+| Cypress (needs a running server) | `npm run build && npm start` in one terminal, then `npm run cypress:open` or `npm run cypress:run` |
+| Cypress smoke only | `npm run cypress:smoke` |
+| New vial SVG | `python scripts/make_vials.py` |
+
+Test layout and what belongs at each layer: [`TESTING.md`](TESTING.md). Architecture: [`ARCHITECTURE.md`](ARCHITECTURE.md).

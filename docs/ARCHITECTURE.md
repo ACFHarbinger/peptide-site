@@ -1,79 +1,171 @@
 # Architecture
 
-> **TODO:** Expand with Mobile Fortress' actual fortress-defense/multiplayer architecture as it's implemented beyond the current inherited client skeletons — see [`moon/ROADMAP.md`](moon/ROADMAP.md) and [`moon/roadmaps/shared_core.md`](moon/roadmaps/shared_core.md). This page should stay in sync with the actual `android/app/` and `ios/MyGame/` modules.
+PepCore Labs is a **research-use-only peptide storefront**: a statically exported Next.js site that sells laboratory compounds to qualified researchers in the EU27. There is no first-party application server in v1. Catalog pages, cart, accounts, and the research-content island are all client-side (or build-time) artifacts hosted on GitHub Pages at [`acfharbinger.github.io/peptide-site`](https://acfharbinger.github.io/peptide-site/).
 
-## Overview
+This page describes the **target system** the repo is being rebuilt toward. Hard-to-reverse choices live in [`docs/adr/`](adr/) — see [ADR 0001](adr/0001-record-architecture-decisions.md) for the format. Subsequent records land as `docs/adr/000X-*.md`; this document links there instead of re-arguing those decisions.
 
-Mobile Fortress ships two independent native clients — an Android application module (`android/app/`, standard `com.android.application` + `kotlin-android` Gradle setup) and an iOS app (`ios/MyGame.xcodeproj`, SwiftUI-lifecycle + SpriteKit) — plus a shared-assets/spec module (`core/`, see `core/README.md`). Each client renders its game surface on a dedicated per-frame update loop decoupled from its UI-chrome framework (Android: `SurfaceView` + a fixed-timestep thread; iOS: SpriteKit's `SKScene.update(_:)`, delta-clamped); menus/HUD/settings around that surface use the platform's native declarative UI (Jetpack Compose / SwiftUI). An **optional** lightweight backend (`infra/`) can be added later for leaderboards or cloud save — both apps run fully offline without it.
+## Port status
 
-## Android Module Boundaries (`android/app/`)
+The React/TypeScript storefront is mid-rebuild. Until `app/` routes and the typed catalog land:
 
-| Module | Responsibility |
+- **Live source of truth** for catalog data, cart behavior, and the age gate is the vanilla skeleton: root [`index.html`](../index.html) plus [`src/script.js`](../src/script.js), [`src/products.js`](../src/products.js), and [`src/style.css`](../src/style.css).
+- **Target layout** is Next.js App Router under `app/`, React components and Redux under `src/`, and a committed typed catalog (TypeScript/JSON) validated in CI.
+
+Do not assume `app/` routes, Redux slices, Firebase, or Stripe wiring exist until you have just added them. The boundaries below are the shape to implement against, not a claim that every folder is already populated.
+
+## Runtime model: static export
+
+| Constraint | Implication |
 | --- | --- |
-| `MainActivity.kt` | Hosts `GameView`, wires Android lifecycle callbacks to the game loop, handles save/restore. |
-| `GameView.kt` | `SurfaceView` + `SurfaceHolder.Callback`; owns the `GameLoop` thread's lifecycle. |
-| `GameLoop.kt` | Fixed-timestep update/render thread, independent of Activity/View lifecycle beyond the `SurfaceHolder` reference it's given. |
-| `engine/GameEngine.kt` | Orchestrates entity update/render each tick; owns the entity collection. |
-| `engine/GameState.kt` | Serializable snapshot of game progress; save/restore boundary. |
-| `engine/entities/` | Individual game objects (e.g. `Ball.kt`), each implementing `update()`/`render()`. |
-| `ui/` | Jetpack Compose screens (main menu, pause, settings) — never part of the render loop. |
+| Next.js 14 App Router with `output: 'export'` | `next build` writes a fully static tree to `out/`. No Route Handlers, no Server Actions, no incremental SSR, no runtime `process.env` after the build. |
+| Production `basePath: '/peptide-site'` | GitHub Pages project site. Asset and route prefixes must include the base path. Local `next dev` uses an empty basePath so `http://localhost:3000/` works. |
+| Config ownership | Source of truth is [`stack/next/next.config.js`](../stack/next/next.config.js), re-exported by the repo-root [`next.config.js`](../next.config.js). Typecheck for `next build` uses [`tsconfig.next.json`](../tsconfig.next.json). |
+| `postbuild` | `ln -sfn . out/peptide-site` so a locally served export can be hit at `/peptide-site` the same way CI Cypress does. |
 
-## iOS Module Boundaries (`ios/MyGame/`)
+A rename of the Pages project path requires updating `stack/next/next.config.js`, the `postbuild` symlink, the Astro `base` / `SITE_BASE`, Cypress/CI `wait-on` URLs, and any other `basePath` consumers together.
 
-| Module | Responsibility |
+There is **no** first-party payment backend, **no** headless CMS, and **no** `notebooks/` workspace. The only Python in this repo is the [`git/`](../git/) automation workspace and the one-off [`scripts/make_vials.py`](../scripts/make_vials.py) SVG generator.
+
+## Module boundaries
+
+```
+GitHub Pages (out/)
+├── Next.js static export          # storefront shell: catalog, PDP, cart, account, checkout handoff
+│     app/                         # App Router routes + layouts (port target)
+│     src/                         # React components, Redux store, hooks, typed catalog
+│     public/                      # static files copied as-is, including the Astro island
+└── public/astro-island/           # Astro 7 + Framer Motion research island (separate build)
+```
+
+| Path | Responsibility |
 | --- | --- |
-| `App/MyGameApp.swift` | SwiftUI `@main` entry point; routes Menu/GameLevel/GameOver from `GameManager.state`. |
-| `App/AppDelegate.swift` | Background/terminate hooks that pause the game (SpriteKit scenes aren't part of `ScenePhase`). |
-| `Core/GameManager.swift` | `ObservableObject` state machine — the SwiftUI-side equivalent of Android's `GameEngine`/`GameState` pairing; implements the shared spec in `core/src/game-state-machine.md`. |
-| `Scenes/GameLevel/GameScene.swift` | `SKScene` subclass owning the per-frame update loop, physics, and input wiring. |
-| `Scenes/Nodes/` | `SKSpriteNode` subclasses (`PlayerNode`, `EnemyNode`, `BulletNode`). |
-| `Engine/Physics/`, `Engine/Input/`, `Engine/Audio/` | Contact resolution, touch handling, AVFoundation SFX/music. |
-| `Engine/Storage/` | `HighScoreStore` / `SettingsStore` — `UserDefaults` + `Codable` persistence. |
-| `UI/` | SwiftUI chrome (`MainMenuView`, `HUDView`, `ShopView`, `GameOverView`, `Theme`) — never part of the render loop. |
-| `Resources/Levels/LevelLoader.swift` | Decodes level JSON referenced directly from `core/assets/levels/` (see `core/README.md`). |
+| `app/` | Next.js App Router: routes and layouts for the storefront (home, catalog, product detail, cart, account, checkout-adjacent pages). Shared chrome (header, age-gate modal, cart drawer, footer) lives in the root layout. **Does not exist yet** — this is where the vanilla `index.html` / `script.js` logic is being ported. |
+| `src/` | During the port: legacy vanilla files plus the future home of React components, Redux store/slices, hooks, utilities, and the typed catalog. After the port: consumed by `app/`; not a second router. |
+| `src/frameworks/astro/` | Isolated Astro 7 project (`srcDir` in [`astro.config.mjs`](../astro.config.mjs)). Built to `public/astro-island`. See [Astro research island](#astro-research-island). |
+| `assets/svgs/` | Procedural product “vial” SVGs generated by `scripts/make_vials.py`. Slug must match the catalog item’s icon id. |
+| `assets/icons/` | Hand-authored brand/UI icons. See [`assets/icons/README.md`](../assets/icons/README.md). |
+| `stack/` | `next/next.config.js` and `eslint/eslint.config.js`, re-exported at the repo root so tooling finds them in the default location. |
+| `test/` | Vitest unit (`test/unit/`), Vitest+MSW integration (`test/integration/`), Cypress (`test/cypress/`). See [`TESTING.md`](TESTING.md). |
+| `infra/` | Optional self-host tooling (`docker/`, `nginx/`, `ansible/`, `terraform/`). **Not** used by the default GitHub Pages workflow. `infra/docker/` is an inert placeholder for a possible future orders API — v1 checkout does not need it. |
+| `git/` | Local Python/`uv` automation: pre-commit-adjacent hooks, commit→ticket linking, GitHub Project board sync. Not part of the site runtime. |
+| `.devcontainer/` | Node.js 20 container for local work. See [`DEVELOPMENT.md`](DEVELOPMENT.md). |
 
-## Shared (`core/`)
+There is no `lib/markdown.ts` content pipeline and no Markdown-driven marketing CMS. Storefront copy lives in React (or, today, `index.html`). Research methodology copy lives in the Astro island.
 
-Raw assets (`core/assets/`) and a documented-but-not-compiled spec (`core/src/`) for the level-data shape and the state-machine shape both clients implement independently. See `core/README.md` and `moon/roadmaps/shared_core.md` for what's real today vs. a future KMP/C++ option.
+## Catalog data layer
 
-## Data Flow
+v1 catalog data is **typed TypeScript / JSON committed to this repository**, schema-validated in CI. It is not a headless CMS and not a spreadsheet import.
 
-**Android:**
+**Today:** [`src/products.js`](../src/products.js) exports `CATS` (category id → label) and `PRODUCTS` (an array of `{ n, c, i, v }` records: name, category key, icon slug, variant list of `[sizeLabel, priceEur]`). Prices are euro amounts; the vanilla UI formats them with a comma decimal.
+
+**Target:** a typed module (exact filename still to land with the port) that the App Router imports at build time. `generateStaticParams` (or equivalent) enumerates product slugs so every PDP is a static HTML file. CI must reject a catalog file that fails the schema (unknown category, missing icon slug, empty variants, non-numeric price, etc.).
+
+Expected fields, derived from the current records and product decisions:
+
+| Field | Role |
+| --- | --- |
+| Identity | Stable slug (matches `assets/svgs/<slug>.svg` and the PDP path). |
+| Display name | Research-compound name as shown on cards and the PDP. |
+| Category | One of: `glp1`, `growth`, `cosmetic`, `healing`, `weight-loss`, `blends`, `essentials`. |
+| Variants | One or more size/presentation + EUR price pairs (e.g. `5mg × 10 vials`). |
+| Evidence | **Not** a per-lot COA attachment. No real per-lot documents exist yet. The UI ships an honest “documentation available on request” placeholder. Do not invent HPLC percentages, lot numbers, or lab names in catalog data. |
+
+Shipping/market scope for v1 is **all EU27**. No further geo-restriction is decided; do not encode country allowlists in the catalog unless an ADR says so.
+
+How to add a product locally is in [`DEVELOPMENT.md`](DEVELOPMENT.md).
+
+## Client state (Redux)
+
+Redux (`redux` + `react-redux`) owns **cross-route** storefront state. Local UI (open/closed drawers, a single form’s field state) stays in `useState` / `useReducer`. Forms that are more than a couple of fields use `@tanstack/react-form`.
+
+Intended slices (names can change; the split should not):
+
+| State | Why Redux |
+| --- | --- |
+| Cart (line items, quantities, subtotal, free-ship threshold) | Header badge, cart drawer, and checkout-handoff page all read the same bag. Today this is an in-memory object in `src/script.js` (`FREE_SHIP = 350` EUR). Persistence (e.g. `localStorage`) is not decided. |
+| Catalog filters / search | Category pill + query string must survive navigation between catalog and PDP. |
+| Age-gate acknowledgement | Today `sessionStorage` key `pepcore-age`. After the port this should be readable from any route that might remount the gate. |
+| Auth session (planned) | Firebase Auth is client-side; a thin slice (or equivalent listener→store bridge) exposes `uid` / signed-in vs signed-out without every page talking to Firebase directly. |
+
+The store is provided from the Next.js root layout so every App Router page sees the same client store. Because this is a static export, Redux is **browser-only** — no server-side store hydration story.
+
+## Age gate, RUO framing, and COA placeholder
+
+These are product constraints, not optional chrome:
+
+- An age gate must run before catalog browsing. The current implementation blocks `document.body` overflow until the visitor confirms and writes `pepcore-age` to `sessionStorage`.
+- Every catalog, cart, and research surface stays **Research Use Only** — no human dosing, no medical claims, no language that products are approved or safe for human consumption.
+- Lab evidence in v1 is a **placeholder**: “documentation available on request.” A full per-lot COA lookup UI is deferred until real certificates exist. Do not fabricate specificity (lot IDs, chromatograms, instrument models) in the storefront or the Astro island.
+
+## Astro research island
+
+The lab-testing / methodology section is a **separate Astro 7 site** with Framer Motion islands, not a Next.js route tree.
+
+| | |
+| --- | --- |
+| Source | `src/frameworks/astro/` (`astro.config.mjs` `srcDir`) |
+| Output | `public/astro-island/` |
+| Base | `${SITE_BASE}astro-island` so it sits under `/peptide-site/astro-island/` in production |
+| Coupling | **Build-time only.** Next.js copies `public/` into the export. The storefront links or iframes the island; it does not import Astro components into React, and Astro does not import the Redux store. |
+
+v1 content is a **factual methodology primer**: what HPLC/MS results mean, how to read a COA, lab-context storage/handling. No dosing. Interactive tools (compound comparison, etc.) come later and stay inside this island so they cannot bloat the storefront shell. See [`docs/BENCHMARKS.md`](BENCHMARKS.md) for the island’s JS budget.
+
+A change to research copy is an Astro rebuild that updates files under `public/astro-island/`. A change to cart/catalog is a Next.js rebuild. They must not share runtime state.
+
+## Planned integrations (do not break the static-export model)
+
+Both of the following are **confirmed for v1** and **not implemented yet**. Exact project IDs, Payment Link URLs, and env-var names are undecided; when they land they are build-time `NEXT_PUBLIC_*` values only. See [`DEVELOPMENT.md`](DEVELOPMENT.md) and [`SECURITY.md`](SECURITY.md).
+
+### Firebase Authentication
+
+Accounts ship in v1 via the **Firebase Authentication client SDK**. Compatible with `output: 'export'` because all Auth calls run in the browser.
+
+- The static bundle may contain the Firebase *web app config* (apiKey, authDomain, projectId, appId). Those values are not privileges; security is in Firebase Auth / Security Rules on the Google side.
+- No Firebase Admin SDK, no service-account JSON, no Auth-blocking Cloud Functions in this repo for v1.
+- If Firestore or Storage is added later for profile or order *references*, rules must assume a fully public client. v1 does not require a first-party database for checkout.
+
+### Hosted checkout redirect
+
+Checkout v1 is a **redirect to a hosted checkout** (Stripe Payment Links or equivalent). The storefront never sees card data and never holds a Stripe secret key.
 
 ```
-Activity lifecycle ──▶ GameView (SurfaceView) ──▶ GameLoop thread
-                                                        │
-                                          ┌─────────────┴─────────────┐
-                                          ▼                           ▼
-                                   GameEngine.update()         GameEngine.render()
-                                          │                           │
-                                   engine/entities/*            Canvas draw calls
-                                          │
-                                   GameState (save/restore, on pause)
+Cart (Redux) ──▶ checkout page ──▶ window.location = hosted Payment Link
+                                      │
+                                      ▼
+                               Stripe-hosted page
+                               (PCI surface is Stripe’s)
 ```
 
-**iOS:**
+What this site may do: map cart line items to pre-created Payment Links or a publishable-key-only Stripe.js redirect, show order *intent*, and return the visitor to a static success/cancel page.
+
+What this site must not do: create PaymentIntents on a server we own, verify webhooks in Next.js, or embed `sk_live` / `sk_test` anywhere in the repo or the `out/` tree. `infra/docker/` is **not** the v1 checkout path.
+
+## Data flow (target)
 
 ```
-SwiftUI Scene lifecycle ──▶ GameContainerView (SpriteView) ──▶ GameScene (SKScene)
-                                                                      │
-                                                    ┌─────────────────┴─────────────────┐
-                                                    ▼                                   ▼
-                                            GameScene.update(_:)            SpriteKit's own render pass
-                                                    │
-                                    PlayerNode/EnemyNode/BulletNode advance
-                                                    │
-                                GameManager (score/state) ──▶ HighScoreStore (on endGame)
+typed catalog (TS/JSON, CI-validated)
+        │
+        ▼
+Next.js build (output: 'export', basePath /peptide-site)
+        │
+        ├── static HTML for catalog / PDP / cart / account / handoff
+        └── copies public/astro-island/ through unchanged
+
+Browser
+        ├── Age gate (sessionStorage) ──▶ catalog browse / filter (Redux)
+        ├── Add variant ──▶ cart slice ──▶ hosted-checkout redirect
+        ├── Firebase Auth client SDK ──▶ auth slice (account chrome)
+        └── <a href> / iframe ──▶ Astro island (no shared store)
 ```
 
-## Rendering Approach
+## Deploy and optional infra
 
-See [ADR 0002](adr/0002-rendering-approach.md) for the Android rationale (`SurfaceView` + `Canvas` over Compose Canvas or a full game engine) and [ADR 0003](adr/0003-ios-rendering-approach.md) for the iOS rationale (SpriteKit over Metal-from-scratch or a cross-platform engine), plus [`.agent/AGENTS.md`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/blob/main/.agent/AGENTS.md) §1.1 for when to swap either out.
+Pushing to `main` runs [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml): Node 20, `npm run build`, `touch out/.nojekyll`, publish `out/` to `gh-pages`. [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) is the quality gate; see [`TESTING.md`](TESTING.md).
 
-## Optional Backend
+Equivalent workflow files under `.gitlab/`, `.gitea/`, and `.forgejo/` exist for other forges; GitHub Pages is the production host.
 
-If leaderboards or cloud save are added, both apps talk to the backend only through a documented REST API (add the schema here once it exists) — never by reaching into backend internals. See `infra/global/docker/README.md`, `infra/global/k8s/README.md` for the optional deployment scaffolding.
+`infra/` (Docker Compose, nginx, Ansible, Terraform) is optional self-host scaffolding and is **not** on the default path. Do not assume a production API, Postgres, or Redis because those files exist.
 
 ## Architecture Decision Records
 
-Significant, hard-to-reverse decisions are recorded under [`docs/adr/`](adr/0001-record-architecture-decisions.md) using the [Michael Nygard ADR format](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions).
+Significant, hard-to-reverse decisions are recorded under [`docs/adr/`](adr/) using the [Michael Nygard ADR format](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions). New records are `docs/adr/000X-*.md`. If you are about to add a server, a CMS, a secret in the client bundle, or a second checkout path, write or cite an ADR first.

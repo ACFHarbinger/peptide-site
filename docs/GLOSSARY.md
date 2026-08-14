@@ -1,32 +1,41 @@
 # Glossary
 
-| Term | Meaning |
-| --- | --- |
-| ADR | Architecture Decision Record — a short document capturing a significant, hard-to-reverse technical decision and its rationale. |
-| AGP | Android Gradle Plugin — the Gradle plugin (`com.android.application`) that builds Android app modules. |
-| AAB | Android App Bundle — the publishing format (`.aab`) uploaded to the Play Store, superseding raw APK uploads. |
-| Fixed timestep | A game loop pattern where the simulation (`update()`) always advances by the same fixed time increment regardless of actual frame rate, keeping physics/logic deterministic. |
-| `GameLoop` | The Android client's dedicated thread running the fixed-timestep update/render cycle for the `SurfaceView` game surface. |
-| Interpolation (rendering) | Blending between the previous and current simulation state when rendering happens more often than fixed updates, for smoother visuals. |
-| `SurfaceView` | An Android View subclass that provides a dedicated drawing surface on a separate thread from the UI thread — the rendering approach the Android client uses for the game surface. |
-| R8 | Android's code shrinker/obfuscator/optimizer, applied to `release` builds. |
-| Play Store track | A release channel in Google Play Console (internal, closed, open, production) that a signed AAB is promoted through. |
-| SpriteKit | Apple's first-party 2D game framework — the rendering approach the iOS client uses for the game surface (`ios/MyGame/Scenes/GameLevel/GameScene.swift`). |
-| `SKScene` | SpriteKit's scene class; its `update(_:)` method is called once per display refresh — the iOS equivalent of Android's `GameLoop` tick, without a hand-rolled thread. |
-| `xcodebuild` | Apple's command-line build tool for Xcode projects — used by `just ios-build`/`ios-test`/`ios-archive` and the `ios-test` CI job. |
-| `.xcarchive` | The archived-build format `xcodebuild archive` produces, the input to exporting a signed `.ipa` for TestFlight/App Store distribution. |
-| `core/` | The shared-assets-and-spec module — canonical raw game data plus a documented (not yet compiled) state-machine/level-schema spec both clients implement independently today. See `core/README.md` and [`moon/roadmaps/shared_core.md`](moon/roadmaps/shared_core.md) for the planned C++ core. |
-| Flow Field | A vector-field pathfinding technique that computes one movement direction per grid tile (via a Dijkstra distance map) instead of a per-unit path — lets hundreds of siege units navigate for roughly the cost of one pathfinding pass. See [`moon/roadmaps/gameplay.md`](moon/roadmaps/gameplay.md). |
-| ECS | Entity-Component-System — a data-oriented architecture (entities as IDs, components as plain data, systems as stateless functions) used in Mobile Fortress' planned C++ core via [EnTT](https://github.com/skypjack/entt). |
-| EnTT | A header-only C++ ECS library — provides the sparse-set entity/component storage for the planned shared simulation core. |
-| FlatBuffers | Google's zero-copy, cross-language serialization format — used for state snapshots crossing the C++ core's JNI (Android) / Swift C++ interop (iOS) boundary and over the network. |
-| JNI | Java Native Interface — the mechanism the Android client uses to call into the C++ core; the counterpart to Swift's native C++ interop on iOS. |
-| Wōkòu (倭寇) / Wakō | Mixed-ethnicity pirate raider bands (Japanese rōnin, Chinese/Korean smugglers) that raided the East Asian coast in the 1540s–1560s Jiajing era; the antagonists Mobile Fortress is set against. |
-| Main HQ / Citadel | The player's primary fortress; its HP reaching zero is the game-over condition. |
-| Resource Outpost | An inland base structure that generates the currency used to buy/deploy land units; defendable separately from the HQ. |
-| Trading Outpost | A coastal/harbor base structure that generates the currency used to buy/deploy naval units; defendable separately from the HQ. |
-| Fo-lang-ji (Folangji) | A Portuguese-derived breech-loading swivel cannon adopted by the Ming military in this era; one of Mobile Fortress' ranged land units. |
-| Ming Garrison Spearmen | Foot-soldier spearmen, the East Asian primary civilization's basic melee/blocker unit type. |
-| Portuguese Arquebusiers | Matchlock-gunner ranged unit fielded by the supporting Western civilization (Portuguese by default). |
+This document provides concise definitions for domain, catalog, lab-testing, and technical terms used throughout the PepCore Labs storefront project.
 
-> **TODO:** Expand with further Mobile Fortress domain terms (gacha/hero-commander system, faction/territory meta-game) as those systems are implemented.
+## Domain & Compliance Terms
+
+| Term | Definition |
+| --- | --- |
+| **RUO (Research Use Only)** | Product classification indicating all compounds are supplied strictly for laboratory research and development, not for human, veterinary, or household consumption. |
+| **Age Gate** | A mandatory verification prompt that requires visitors to confirm they are of legal age and acknowledge RUO terms before viewing catalog products. |
+| **EU27 Scope** | The initial geographic shipping area for PepCore Labs v1, restricted to member states of the European Union. |
+
+## Lab & Analytical Testing Terms
+
+| Term | Definition |
+| --- | --- |
+| **COA (Certificate of Analysis)** | An official analytical document detailing chemical identity, purity, and batch quality; supplied on request in v1 pending full per-lot evidence UI integration. |
+| **HPLC (High-Performance Liquid Chromatography)** | An analytical separation technique used to determine compound purity and quantify chemical constituents in a peptide sample. |
+| **MS (Mass Spectrometry)** | An analytical spectrometry technique used alongside HPLC to verify compound identity by measuring exact mass-to-charge ratios of peptide sequences. |
+| **Purity Percentage** | The quantified proportion of target compound relative to impurities (typically specified at ≥98% or ≥99%) determined via HPLC integration. |
+| **Lot / Batch Number** | A unique production run code assigned to a compound synthesis lot to trace quality control logs and analytical testing history. |
+| **Endotoxin Level** | Measurement of bacterial pyrogens (lipopolysaccharides) in a lyophilized sample to ensure compatibility with sensitive cellular assays. |
+
+## E-Commerce & Catalog Terms
+
+| Term | Definition |
+| --- | --- |
+| **SKU (Stock Keeping Unit)** | A unique alphanumeric code identifying a specific product item and quantity variant within the inventory catalog. |
+| **Variant** | A distinct formulation, quantity, or mass option associated with a base peptide compound (e.g., 5mg vs. 10mg vial). |
+| **Category** | A logical grouping of catalog items based on research application (e.g., GLP-1 Agonists, Healing & Recovery, Antiaging & GH). |
+| **Hosted Checkout Redirect** | The v1 payment flow that redirects customers to an external provider (e.g., Stripe Payment Links), keeping API keys and payment secrets out of the static frontend bundle. |
+| **Firebase Authentication** | Client-side user account authentication framework used to support researcher sign-in natively within a static site export. |
+
+## Technical & Architectural Terms
+
+| Term | Definition |
+| --- | --- |
+| **Static Export** | Next.js build mode (`output: 'export'`) that pre-renders all storefront pages into static HTML/JS/CSS artifacts for hosting on GitHub Pages. |
+| **basePath** | The Next.js routing configuration (`/peptide-site`) required for serving static assets and routes under a GitHub Pages repository subpath. |
+| **Astro Content Island** | An isolated sub-project (`src/frameworks/astro/`) built to `public/astro-island` for interactive methodology content using Astro 7 and Framer Motion. |
+| **Catalog Schema** | The strict TypeScript/JSON schema used to validate catalog product data at build time, ensuring strict typing without a headless CMS. |

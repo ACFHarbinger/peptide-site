@@ -15,6 +15,7 @@ lint-typecheck-unit:
     - npm ci
     - npm run lint
     - npx tsc --noEmit
+    - npm run validate:catalog
     - npm run test:unit
     - npm run test:integration
 
@@ -36,7 +37,7 @@ e2e:
   script:
     - npm ci
     - npm run build
-    # cypress.config.js's specPattern covers both e2e/ and smoke/, so this
+    # cypress.config.cjs's specPattern covers both e2e/ and smoke/, so this
     # one run covers both suites.
     - npx start-server-and-test start http://localhost:3000/peptide-site "npm run cypress:run"
 

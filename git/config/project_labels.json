@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema#",
-  "description": "Canonical label taxonomy for Organization-Website. Consumed by sync_backlog.py to validate/create labels and by agent_tools.py to route tickets to Project V2 fields.",
+  "description": "Canonical label taxonomy for peptide-site. Consumed by sync_backlog.py to validate/create labels and by agent_tools.py to route tickets to Project V2 fields.",
   "components": [
     { "name": "component:site",         "color": "3178C6", "description": "app/, src/, lib/ — the Next.js site" },
     { "name": "component:content",      "color": "0E8A16", "description": "app/content/ — posts, reports, projects, tools, media, about, other" },

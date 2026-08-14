@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🌐 Live Site
-    url: https://hyperion-corporation.github.io/Organization-Website/
+    url: https://acfharbinger.github.io/peptide-site/
     about: The deployed site this repository builds.
   - name: 📖 Docs
-    url: https://github.com/Hyperion-Corporation/Organization-Website/tree/main/docs
-    about: Architecture, development guides, and Hyperion product roadmaps under docs/moon/.
+    url: https://github.com/ACFHarbinger/peptide-site/tree/main/docs
+    about: Architecture, development guides, and product roadmaps under docs/moon/.

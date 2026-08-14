@@ -1,9 +1,9 @@
-# Contributing to Organization-Website
+# Contributing to peptide-site
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776ab?logo=python&logoColor=white)](https://www.python.org/)
-[![CI](https://github.com/Hyperion-Corporation/Organization-Website/actions/workflows/ci.yml/badge.svg)](https://github.com/Hyperion-Corporation/Organization-Website/actions/workflows/ci.yml)
+[![CI](https://github.com/ACFHarbinger/peptide-site/actions/workflows/ci.yml/badge.svg)](https://github.com/ACFHarbinger/peptide-site/actions/workflows/ci.yml)
 
 Thank you for your interest in contributing! This document covers setup, style, and the PR process for this repository.
 
@@ -11,13 +11,17 @@ Thank you for your interest in contributing! This document covers setup, style, 
 
 ## Table of Contents
 
-1. [Getting Started](#1-getting-started)
-2. [Development Setup](#2-development-setup)
-3. [Code Style Guidelines](#3-code-style-guidelines)
-4. [Git Workflow](#4-git-workflow)
-5. [Pull Request Process](#5-pull-request-process)
-6. [Testing Requirements](#6-testing-requirements)
-7. [Issue Reporting](#7-issue-reporting)
+- [Contributing to peptide-site](#contributing-to-peptide-site)
+  - [Table of Contents](#table-of-contents)
+  - [1. Getting Started](#1-getting-started)
+    - [1.1 Prerequisites](#11-prerequisites)
+    - [1.2 Clone and bootstrap](#12-clone-and-bootstrap)
+  - [2. Development Setup](#2-development-setup)
+  - [3. Code Style Guidelines](#3-code-style-guidelines)
+  - [4. Git Workflow](#4-git-workflow)
+  - [5. Pull Request Process](#5-pull-request-process)
+  - [6. Testing Requirements](#6-testing-requirements)
+  - [7. Issue Reporting](#7-issue-reporting)
 
 ---
 
@@ -32,8 +36,8 @@ Thank you for your interest in contributing! This document covers setup, style, 
 ### 1.2 Clone and bootstrap
 
 ```bash
-git clone https://github.com/Hyperion-Corporation/Organization-Website.git
-cd Organization-Website
+git clone https://github.com/ACFHarbinger/peptide-site.git
+cd peptide-site
 npm install
 npm run dev
 ```

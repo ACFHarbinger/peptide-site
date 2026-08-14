@@ -1,7 +1,7 @@
 [project]
 name = "peptide-site"
 version = "0.1.0"
-description = "Python workspace for Hyperion Corporation Organization-Website (git tooling)."
+description = "Python workspace for peptide-site (git tooling)."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"

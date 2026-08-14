@@ -12,8 +12,8 @@ project:
   # GitHub Project (V2) number as shown in the project URL, e.g.
   # https://github.com/users/<owner>/projects/<number>
   number: 16
-  owner: "Hyperion-Corporation"
-  owner_type: "org"         # "user" | "org"
+  owner: "ACFHarbinger"
+  owner_type: "user"         # "user" | "org"
 
 sync:
   # Files the agent is allowed to read as its source of truth for tickets.

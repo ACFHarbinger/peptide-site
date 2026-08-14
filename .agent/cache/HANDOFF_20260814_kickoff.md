@@ -5,7 +5,7 @@
 **Why this file exists**: pkhunter is about to start a new session with you in *this*
 repo (`peptide-site`), asking for the current static HTML/CSS/JS skeleton to be
 rebuilt into a full TypeScript + React site, similar in engineering scope to
-`/home/pkhunter/Repositories/Other/Organization-Website`. This file carries over
+`/home/pkhunter/Repositories/Other/peptide-site`. This file carries over
 the machine-wide hardware constraint and the working conventions from that other
 session so you don't have to rediscover them.
 
@@ -137,7 +137,7 @@ build step at all today; `index.html` loads `style.css` and `script.js` directly
   already-generated SVGs as static assets.
 - `README.md` — currently just the title, no content.
 - `.agent/AGENTS.md` — **stale, wrong for this repo.** It's a verbatim copy of
-  `Organization-Website`'s AGENTS.md (references "Hyperion Corporation",
+  `peptide-site`'s AGENTS.md (references "Hyperion Corporation",
   Next.js App Router `app/content/<section>/`, VGP/graph-visualization product
   messaging — none of which applies here). This needs a full rewrite once the
   real architecture is decided, same class of issue as was found and fixed in
@@ -149,7 +149,7 @@ No git history worth preserving carefully: 2 commits (`first commit`,
 
 ---
 
-## 4. The reference project: `Organization-Website`
+## 4. The reference project: `peptide-site`
 
 Verified today (real `package.json`/directory listing, not just its AGENTS.md
 claims):
@@ -164,7 +164,7 @@ claims):
 | Also present | `astro`, `aurelia`, `framer-motion`, `@tanstack/react-form`, a separate Docusaurus `docs/website/`, a `notebooks/` Python/uv workspace, `infra/` (docker/nginx/ansible/terraform), multi-forge CI (`.github/`, `.gitlab/`, `.gitea/`, `.forgejo/`) |
 
 **Important scope-calibration flag for you to resolve with pkhunter, don't just
-assume:** Organization-Website is a *multi-framework showcase* site for a
+assume:** peptide-site is a *multi-framework showcase* site for a
 software company whose product is dev tooling — the astro islands, Aurelia,
 GraphQL, `simulations/`, Docusaurus docs site, and Python notebooks workspace
 all exist because that's literally what Hyperion sells/demonstrates. None of

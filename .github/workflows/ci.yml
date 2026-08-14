@@ -62,7 +62,7 @@ jobs:
         with:
           working-directory: test/cypress
           start: npm start --prefix ../..
-          wait-on: "http://localhost:3000/Organization-Website"
+          wait-on: "http://localhost:3000/peptide-site"
           # cypress.config.js's specPattern already covers both e2e/ and
           # smoke/, so this one run covers both suites.
 

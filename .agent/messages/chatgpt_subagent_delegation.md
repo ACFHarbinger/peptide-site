@@ -20,7 +20,7 @@ Run the command in your shell, wrapping the prompt in strong quotes to prevent s
 3.  **Role Definition:** Always assign ChatGPT a clear persona (e.g., "Act as a PhD-level Operations Research scientist").
 
 **Example Usage:**
-`chatgpt 'Act as a software architecture expert for creative tooling. I am writing a Hyperion design note for Visual Graph Programming. Provide a clear formal description of a directed multigraph of code modules, assets, and storyboard nodes with edge types (depends_on, uses_asset, implements_beat). Rules: 1. Define node and edge sets. 2. Keep notation compact. 3. Output ONLY the formal description and symbol definitions in plain text.'`
+`chatgpt 'Act as a software architecture expert for creative tooling. I am writing a design note for peptide-site. Provide a clear formal description of a directed multigraph of code modules, assets, and storyboard nodes with edge types (depends_on, uses_asset, implements_beat). Rules: 1. Define node and edge sets. 2. Keep notation compact. 3. Output ONLY the formal description and symbol definitions in plain text.'`
 
 **Failure Modes to Avoid:**
 *   **Do not** use unescaped single quotes inside the `chatgpt` command string.

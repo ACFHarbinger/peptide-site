@@ -38,7 +38,7 @@ e2e:
     - npm run build
     # cypress.config.js's specPattern covers both e2e/ and smoke/, so this
     # one run covers both suites.
-    - npx start-server-and-test start http://localhost:3000/Organization-Website "npm run cypress:run"
+    - npx start-server-and-test start http://localhost:3000/peptide-site "npm run cypress:run"
 
 lint-notebooks:
   stage: test
@@ -103,8 +103,8 @@ lighthouse:
     - npm ci
     - npm run build
     - npx serve@latest out -l 3000 &
-    - npx wait-on http://localhost:3000/Organization-Website
-    - npx lighthouse http://localhost:3000/Organization-Website --output=json --output-path=./lighthouse-report.json --chrome-flags="--headless --no-sandbox"
+    - npx wait-on http://localhost:3000/peptide-site
+    - npx lighthouse http://localhost:3000/peptide-site --output=json --output-path=./lighthouse-report.json --chrome-flags="--headless --no-sandbox"
   artifacts:
     paths:
       - lighthouse-report.json
@@ -127,6 +127,6 @@ agent-backlog-sync:
   script:
     - uv run --project git python -c "import json,pathlib; json.loads(pathlib.Path('git/config/project_labels.json').read_text())"
     - uv run --project git python -c "import yaml,pathlib; yaml.safe_load(pathlib.Path('git/config/automation_rules.yaml').read_text())"
-    - uv run --project git python -m git.scripts.sync_backlog --repo-owner Hyperion-Corporation --repo-name Organization-Website --project-id "$PROJECT_ID"
+    - uv run --project git python -m git.scripts.sync_backlog --repo-owner ACFHarbinger --repo-name peptide-site --project-id "$PROJECT_ID"
   variables:
     GITHUB_TOKEN: $PROJECT_AUTOMATION_TOKEN

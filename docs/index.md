@@ -1,21 +1,27 @@
-# Mobile Fortress Documentation
+# peptide-site Documentation
 
-Welcome to the documentation portal for **Mobile Fortress** — a cooperative tower-defense mobile game set during the 1540s–1560s Wōkòu pirate crisis on the East Asian coast. The primary, deployed way to read this documentation is the interactive site under [`docs/website/`](https://github.com/ACFHarbinger/Project-Mobile-Fortress/tree/main/docs/website) (a Vue 3 SPA combining the design hub with a live doc reader, published to [GitHub Pages](https://acfharbinger.github.io/Project-Mobile-Fortress/)); this MkDocs-built portal ([MkDocs Material](https://squidfunk.github.io/mkdocs-material/)) remains available for local browsing (`pip install . && mkdocs serve --config-file docs/mkdocs.yml`, using the root `pyproject.toml`).
+Welcome to the documentation for **peptide-site** (PepCore Labs) — a research-peptide e-commerce storefront, statically exported with Next.js and deployed to GitHub Pages. See the repo root [`README.md`](../README.md) for a quick overview, product/repo context, and the getting-started commands.
 
-See [`moon/ROADMAP.md`](moon/ROADMAP.md) for the full game concept and phased delivery plan.
+This portal is built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/). Serve it locally with:
 
-This is a two-client repository: a Kotlin Android app (`android/`) and a Swift iOS app (`ios/`), sharing raw assets and a documented spec under `core/` (migrating to a compiled C++ shared core — see [`moon/roadmaps/shared_core.md`](moon/roadmaps/shared_core.md)).
+```bash
+pip install mkdocs mkdocs-material
+mkdocs serve --config-file docs/mkdocs.yml
+```
+
+See [`ROADMAP.md`](moon/ROADMAP.md) for the current product roadmap and phased delivery plan.
 
 ## Where to start
 
-- [Architecture](ARCHITECTURE.md) — system design, module boundaries (both clients), and the rendering-approach decisions
-- [Development](DEVELOPMENT.md) — local setup for Android Studio + emulator, and Xcode + Simulator (macOS host required for iOS)
-- [Testing](TESTING.md) — how to run and write Android unit/instrumented tests and iOS XCTest suites
-- [Glossary](GLOSSARY.md) — project-specific terms, both platforms
-- [Troubleshooting](TROUBLESHOOTING.md) — common Android/iOS/CI/docs-site build failures and fixes
-- [Dependency Policy](DEPENDENCY_POLICY.md) — version requirements, pinning, and upgrade cadence per stack
-- [Documentation Standards](DOCUMENTATION_STANDARDS.md) — KDoc/DocC/Markdown conventions and where a fact belongs
-- [Benchmarks](BENCHMARKS.md) — target performance budgets and the planned benchmark suite
+- [Architecture](ARCHITECTURE.md) — system design, the Next.js/Astro boundary, static-export constraints
+- [Development](DEVELOPMENT.md) — local setup, environment variables, adding a product to the catalog
+- [Testing](TESTING.md) — the Vitest/MSW/Cypress test pyramid and what belongs where
+- [Glossary](GLOSSARY.md) — domain terms (catalog/e-commerce and research-peptide specific)
+- [Troubleshooting](TROUBLESHOOTING.md) — common build/export/asset-path failures and fixes
+- [Dependency Policy](DEPENDENCY_POLICY.md) — how and when to add a dependency
+- [Documentation Standards](DOCUMENTATION_STANDARDS.md) — where a given fact belongs (README vs `.agent/AGENTS.md` vs `docs/` vs inline comments)
+- [Benchmarks](BENCHMARKS.md) — target performance budgets for the static export
+- [Security](SECURITY.md) — security scope and how to report an issue
 - [`moon/ROADMAP.md`](moon/ROADMAP.md) — what's planned
 - [`moon/CHANGELOG.md`](moon/CHANGELOG.md) — what shipped
-- [Architecture Decision Records](adr/0001-record-architecture-decisions.md) — significant, hard-to-reverse decisions, including the per-platform rendering-approach ADRs
+- [Architecture Decision Records](adr/0001-record-architecture-decisions.md) — significant, hard-to-reverse decisions

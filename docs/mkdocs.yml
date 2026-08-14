@@ -1,15 +1,13 @@
-site_name: Mobile Fortress Documentation
+site_name: peptide-site Documentation
 site_description: >-
-  Documentation portal for Mobile Fortress, a cooperative Wōkòu-pirate-era coastal tower-defense mobile game.
+  Documentation portal for peptide-site (PepCore Labs), a statically-exported Next.js research-peptide storefront.
 site_author: ACFHarbinger
-repo_url: https://github.com/ACFHarbinger/Project-Mobile-Fortress
-repo_name: ACFHarbinger/Project-Mobile-Fortress
+repo_url: https://github.com/ACFHarbinger/peptide-site
+repo_name: ACFHarbinger/peptide-site
 edit_uri: edit/main/docs/
 
 docs_dir: .
 site_dir: ../site
-exclude_docs: |
-  website/
 
 theme:
   name: material
@@ -51,35 +49,15 @@ nav:
   - Dependency Policy: DEPENDENCY_POLICY.md
   - Documentation Standards: DOCUMENTATION_STANDARDS.md
   - Benchmarks: BENCHMARKS.md
-  - Reference:
-      - TypeScript API:
-          - Overview: api/typescript/readme.md
+  - Security: SECURITY.md
   - Architecture Decisions:
       - 0001 Record Architecture Decisions: adr/0001-record-architecture-decisions.md
-      - 0002 Rendering Approach: adr/0002-rendering-approach.md
-      - 0003 iOS Rendering Approach: adr/0003-ios-rendering-approach.md
+      - 0002 Static Export Deployment: adr/0002-static-export-deployment.md
+      - 0003 Astro Island Boundary: adr/0003-astro-island-boundary.md
+      - 0004 Checkout Hosted Redirect: adr/0004-checkout-hosted-redirect.md
+      - 0005 Accounts via Firebase Auth: adr/0005-accounts-firebase-auth.md
+      - 0006 Catalog Typed Repo Data: adr/0006-catalog-typed-repo-data.md
+      - 0007 COA Placeholder First: adr/0007-coa-placeholder-first.md
   - Roadmap:
       - Overview: moon/ROADMAP.md
       - Changelog: moon/CHANGELOG.md
-      - Gameplay: moon/roadmaps/gameplay.md
-      - UI/UX: moon/roadmaps/ui_ux.md
-      - Performance: moon/roadmaps/performance.md
-      - Monetization: moon/roadmaps/monetization.md
-      - Backend: moon/roadmaps/backend.md
-      - AI Systems: moon/roadmaps/ai_systems.md
-      - QA & Testing: moon/roadmaps/qa_testing.md
-      - iOS: moon/roadmaps/ios.md
-      - Shared Core: moon/roadmaps/shared_core.md
-      - Internal Dashboard: moon/roadmaps/internal_dashboard.md
-      - Repository Automation: moon/roadmaps/repo_automation.md
-  - Design:
-      - Game Design Document: design/game_design_document.md
-      - Art Bible: design/art_bible.md
-      - Audio Design: design/audio_design_document.md
-      - Pitch Deck: design/pitch_deck.md
-      - Production Roadmap: design/production_roadmap.md
-      - QA Test Plan: design/qa_test_plan.md
-      - Technical Design Document: design/technical_design_document.md
-  - Research:
-      - Tower Defense Market: moon/reports/Tower Defense Market Research.md
-      - Multiplayer Architecture: moon/research/Multiplayer Tower Defense Implementation.md

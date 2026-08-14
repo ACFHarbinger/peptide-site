@@ -1,19 +1,23 @@
-# Placeholder multi-stage build for an optional leaderboards/cloud-save backend.
+# Placeholder multi-stage build for an optional orders/inventory/checkout API backend.
 # This repository ships no backend source code yet — replace `backend/` with your
-# actual service (e.g. a small Ktor, Ktor+Exposed, or Node/Express API) before
-# building this image. Delete infra/global/docker/ entirely if your game is offline-only.
+# actual service (e.g. a Node/Express, Fastify, or NestJS API) before
+# building this image. Delete infra/docker/ entirely if no backend service is needed.
 
-FROM eclipse-temurin:17-jdk-jammy AS build
+FROM node:20-alpine AS build
 WORKDIR /src
-# COPY backend/ .
-# RUN ./gradlew installDist
+# COPY backend/package*.json ./
+# RUN npm ci
+# COPY backend/ ./
+# RUN npm run build
 
-FROM eclipse-temurin:17-jre-jammy AS runtime
+FROM node:20-alpine AS runtime
 WORKDIR /app
-RUN useradd -m -s /bin/bash appuser
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
-# COPY --from=build /src/build/install/backend /app
+# COPY --from=build /src/dist /app/dist
+# COPY --from=build /src/node_modules /app/node_modules
 EXPOSE 8080
-COPY infra/global/docker/entrypoint.sh /app/entrypoint.sh
+COPY infra/docker/entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
-# CMD ["/app/bin/backend"]
+# CMD ["node", "dist/index.js"]
+

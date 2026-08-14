@@ -1,6 +1,7 @@
 ---
-- name: Provision the optional leaderboards/cloud-save backend host
+- name: Provision the optional peptide-site backend API host
   hosts: backend
   become: true
   roles:
     - app
+

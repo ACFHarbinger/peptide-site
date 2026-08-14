@@ -1,14 +1,14 @@
 services:
   backend:
     build:
-      context: ../../..
-      dockerfile: infra/global/docker/Dockerfile
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
     ports:
       - "8080:8080"
     environment:
       DB_HOST: db
       DB_PORT: "5432"
-      DATABASE_URL: postgres://game:game@db:5432/game_backend
+      DATABASE_URL: postgres://peptide:peptide@db:5432/peptide_site
       REDIS_URL: redis://cache:6379
     depends_on:
       - db
@@ -17,9 +17,9 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: game
-      POSTGRES_PASSWORD: game
-      POSTGRES_DB: game_backend
+      POSTGRES_USER: peptide
+      POSTGRES_PASSWORD: peptide
+      POSTGRES_DB: peptide_site
     ports:
       - "5432:5432"
     volumes:
@@ -32,3 +32,4 @@ services:
 
 volumes:
   db-data:
+

@@ -17,7 +17,7 @@
     "build": "next build",
     "benchmark:build": "npm run build",
     "benchmark": "node benchmark/measure.mjs",
-    "postbuild": "ln -sfn . out/peptide-site",
+    "postbuild": "ln -sfn . out/peptide-site && rm -rf out/assets && cp -a assets out/assets",
     "start": "npx serve@latest out",
     "lint": "next lint",
     "validate:catalog": "node scripts/validate-catalog.mjs",

@@ -27,7 +27,9 @@ export interface StorefrontShellProps {
  * opens the drawer.
  */
 export const StorefrontShell: React.FC<StorefrontShellProps> = ({ children }) => {
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  // null = not yet read from storage. Never open the gate until that check
+  // finishes, or a full navigation (logo / catalog) would flash it again.
+  const [ageConfirmed, setAgeConfirmed] = useState<boolean | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const cartItemCount = useAppSelector(selectCartItemCount);
   const addToCart = useAddToCart();
@@ -49,7 +51,7 @@ export const StorefrontShell: React.FC<StorefrontShellProps> = ({ children }) =>
 
   return (
     <>
-      <AgeGateModal open={!ageConfirmed} onConfirm={handleConfirmAge} />
+      <AgeGateModal open={ageConfirmed === false} onConfirm={handleConfirmAge} />
 
       <Header
         cartItemCount={cartItemCount}

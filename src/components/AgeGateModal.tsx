@@ -8,6 +8,24 @@ export interface AgeGateModalProps {
   onDecline?: () => void;
 }
 
+function EmblemIcon() {
+  return (
+    <svg
+      viewBox="0 0 28 28"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-8 h-8 text-[var(--accent)]"
+      aria-hidden="true"
+    >
+      <path d="M14 2L25 8.2V19.8L14 26L3 19.8V8.2Z" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="14" cy="14" r="4.8" stroke="currentColor" strokeWidth="1.1" />
+      <line x1="14" y1="9.2" x2="14" y2="18.8" stroke="currentColor" strokeWidth="0.9" />
+      <line x1="9.2" y1="14" x2="18.8" y2="14" stroke="currentColor" strokeWidth="0.9" />
+    </svg>
+  );
+}
+
 export const AgeGateModal: React.FC<AgeGateModalProps> = ({
   open,
   onConfirm,
@@ -16,54 +34,87 @@ export const AgeGateModal: React.FC<AgeGateModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] grid place-items-center p-5">
+    <div
+      className="fixed inset-0 z-[100] grid place-items-center p-5"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="age-gate-heading"
+    >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(143,103,255,0.22),transparent_46%),rgba(10,4,20,0.8)] backdrop-blur-md" />
+      <div
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ background: 'rgba(9,9,14,0.82)' }}
+        aria-hidden="true"
+      />
 
       {/* Modal panel */}
-      <div className="relative w-[min(480px,calc(100vw-40px))] bg-white rounded-[28px] p-[42px_36px] text-center shadow-[0_40px_100px_rgba(8,3,18,0.45)] animate-in fade-in zoom-in duration-300">
-        <div className="grid place-items-center w-[68px] h-[68px] mx-auto mb-5 rounded-[20px] bg-gradient-to-br from-[#432D76] to-[#6d4dcc] text-white text-2xl shadow-[0_16px_34px_rgba(67,45,118,0.34)]">
-          ◈
+      <div
+        className="relative w-[min(460px,calc(100vw-40px))]
+          rounded-[var(--radius-lg)] bg-[var(--bg-card)]
+          border border-[var(--border)] p-10 text-center
+          shadow-[var(--shadow-lg)] animate-fade-in"
+      >
+        {/* Emblem */}
+        <div className="grid place-items-center w-16 h-16 mx-auto mb-5 rounded-[var(--radius)]
+          bg-[var(--accent-light)] border border-[var(--accent)]/25">
+          <EmblemIcon />
         </div>
 
-        <span className="inline-flex px-3.5 py-1.5 rounded-full border border-[#432d76]/16 bg-[#f6f2ff] text-[#432D76] text-[11px] font-extrabold tracking-widest uppercase mb-4">
+        {/* Badge */}
+        <span className="inline-flex px-3 py-1 rounded-full
+          border border-[var(--accent)]/25 bg-[var(--accent-light)]
+          text-[var(--accent)] text-[10px] font-semibold tracking-[0.14em] uppercase mb-4">
           Age Verification
         </span>
 
-        <h2 className="text-2xl sm:text-3xl md:text-[2.4rem] font-black leading-tight text-[#120d20] mb-3">
-          Are you 21 or older?
+        <h2
+          id="age-gate-heading"
+          className="text-[1.7rem] sm:text-[2rem] font-bold leading-tight
+            tracking-[-0.015em] text-[var(--text)] mb-3"
+        >
+          Are you 18 or older?
         </h2>
 
-        <p className="text-[#7d7592] text-base max-w-[40ch] mx-auto leading-relaxed">
-          This store contains research products for qualified researchers aged 21 and over.
+        <p className="text-[var(--text-muted)] text-[14px] max-w-[38ch] mx-auto leading-relaxed mb-7">
+          This store contains research products for qualified researchers aged 18 and over.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 mt-6.5">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={onConfirm}
-            className="flex-1 min-h-[56px] py-3.5 px-6 rounded-full bg-[#5A34CC] hover:bg-[#432D76] text-white font-extrabold text-sm shadow-[0_14px_30px_rgba(90,52,204,0.30)] transition-all"
+            className="flex-1 min-h-[50px] py-3 px-6 rounded-full
+              bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white
+              font-semibold text-[13.5px] shadow-[var(--shadow-blue)]
+              transition-all hover:-translate-y-0.5"
           >
-            Yes, I am 21+
+            Yes, I am 18+
           </button>
 
           {onDecline ? (
             <button
               onClick={onDecline}
-              className="flex-1 min-h-[56px] py-3.5 px-6 rounded-full bg-white text-[#5a5270] border-1.5 border-[#432d76]/16 hover:border-[#432d76]/34 hover:text-[#432D76] hover:bg-[#faf8ff] font-extrabold text-sm transition-all"
+              className="flex-1 min-h-[50px] py-3 px-6 rounded-full
+                border border-[var(--border)] text-[var(--text-muted)]
+                hover:text-[var(--text)] hover:border-[var(--accent)]/40
+                font-semibold text-[13.5px] transition-all hover:-translate-y-0.5"
             >
               Exit
             </button>
           ) : (
             <a
               href="https://www.google.com"
-              className="flex-1 min-h-[56px] py-3.5 px-6 rounded-full bg-white text-[#5a5270] border-1.5 border-[#432d76]/16 hover:border-[#432d76]/34 hover:text-[#432D76] hover:bg-[#faf8ff] font-extrabold text-sm transition-all grid place-items-center"
+              className="flex-1 min-h-[50px] py-3 px-6 rounded-full
+                border border-[var(--border)] text-[var(--text-muted)]
+                hover:text-[var(--text)] hover:border-[var(--accent)]/40
+                font-semibold text-[13.5px] transition-all hover:-translate-y-0.5
+                grid place-items-center"
             >
               Exit
             </a>
           )}
         </div>
 
-        <p className="text-[11.5px] text-[#7d7592] mt-4 mb-0">
+        <p className="text-[11px] text-[var(--text-dim)] mt-5">
           Research use only. Not for human consumption.
         </p>
       </div>

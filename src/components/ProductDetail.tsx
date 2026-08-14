@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { CATEGORY_BY_SLUG } from '../catalog/categories';
 import type { Product } from '../catalog/types';
+import { vialSrc } from '../lib/paths';
 import { StorefrontShell } from './StorefrontShell';
 import { ProductCard } from './ProductCard';
 
@@ -61,7 +62,7 @@ export function ProductDetail({ product, relatedProducts, onAddToCart }: Product
               }}
             >
               <img
-                src={`/assets/svgs/${product.icon}.svg`}
+                src={vialSrc(product.icon)}
                 alt={product.name}
                 style={{ maxHeight: '100%', filter: 'drop-shadow(0 26px 30px rgba(67, 45, 118, 0.24))' }}
               />

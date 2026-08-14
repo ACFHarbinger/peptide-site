@@ -8,9 +8,7 @@ interface ProductPageProps {
   params: { slug: string };
 }
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return PRODUCTS.map(({ slug }) => ({ slug }));
 }
 

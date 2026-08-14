@@ -7,6 +7,10 @@ const nextConfig = {
   output: 'export',
   basePath: siteBase,
   assetPrefix: siteBase,
+  env: {
+    // Inlined into client bundles so <img> / <a> paths match basePath.
+    NEXT_PUBLIC_BASE_PATH: siteBase,
+  },
   images: {
     // GitHub Pages has no Next.js image optimization server.
     unoptimized: true,

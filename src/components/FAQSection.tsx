@@ -26,7 +26,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: 'What purity can I expect?',
     answer:
-      'Our peptides are released at ≥ 99% HPLC purity, with endotoxin testing available on select batches. Purity is documented per batch.',
+      'Our peptides are released at ≥99% HPLC purity, with endotoxin testing available on select batches. Purity is documented per batch.',
   },
   {
     question: 'Do you offer wholesale or custom synthesis?',
@@ -44,36 +44,52 @@ export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-white py-20" id="faq">
-      <div className="mx-auto max-w-[860px] px-6">
-        <div className="mb-10 text-center">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#8f67ff]">FAQ</span>
-          <h2 className="mt-2 text-3xl font-black text-[#120d20]">Frequently asked questions</h2>
+    <section className="bg-[var(--bg-surface)] py-20 scroll-mt-32" id="faq">
+      <div className="max-w-[860px] mx-auto px-6">
+
+        {/* Header — left-aligned for a more editorial / authoritative feel */}
+        <div className="mb-10">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+            FAQ
+          </span>
+          <h2 className="mt-2 text-[1.9rem] sm:text-[2.2rem] font-bold tracking-[-0.02em]
+            text-[var(--text)] leading-tight">
+            Frequently asked questions
+          </h2>
         </div>
 
-        <div className="flex flex-col divide-y divide-[#432d76]/10 rounded-2xl border border-[#432d76]/10">
+        {/* Accordion */}
+        <div className="flex flex-col rounded-[var(--radius)] border border-[var(--border)]
+          overflow-hidden divide-y divide-[var(--border)]">
           {FAQ_ITEMS.map((item, index) => {
             const isOpen = openIndex === index;
             return (
-              <div key={item.question}>
+              <div key={item.question} className="bg-[var(--bg-card)]">
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                  className="flex w-full items-center justify-between gap-4 px-6 py-4 text-left
+                    hover:bg-[var(--bg-well)] transition-colors duration-150"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-bold text-[#120d20]">{item.question}</span>
+                  <span className="font-semibold text-[0.94rem] text-[var(--text)]">
+                    {item.question}
+                  </span>
                   <span
-                    className={`shrink-0 text-xl text-[#8f67ff] transition-transform ${
-                      isOpen ? 'rotate-45' : ''
-                    }`}
+                    className={`shrink-0 grid place-items-center w-6 h-6 rounded-full
+                      border border-[var(--accent)]/40 text-[var(--accent)] text-lg
+                      transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`}
                     aria-hidden="true"
                   >
                     +
                   </span>
                 </button>
+
                 {isOpen && (
-                  <p className="px-5 pb-4 text-sm leading-relaxed text-[#4d4762]">{item.answer}</p>
+                  <p className="px-6 pb-5 pt-0.5 text-[13.5px] leading-relaxed
+                    text-[var(--text-muted)]">
+                    {item.answer}
+                  </p>
                 )}
               </div>
             );

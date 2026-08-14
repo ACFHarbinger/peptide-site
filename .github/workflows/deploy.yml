@@ -1,0 +1,51 @@
+name: Deploy Next.js to GitHub Pages
+
+on:
+  # Trigger the workflow manually from the Actions tab
+  workflow_dispatch:
+  # Trigger the workflow when changes are pushed to the main branch
+  push:
+    branches: ["main", "master"]
+
+permissions:
+  contents: write 
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout the repository content
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Required to fetch history for deployment action
+          fetch-depth: 0
+
+      # 2. Setup Node.js environment
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' # Use npm cache for faster installs
+
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Build the Next.js static site
+      - name: Build Static Site
+        # Runs 'next build' and 'next export' (implicitly via output: 'export')
+        run: npm run build
+
+      # 5. Add .nojekyll file to prevent GitHub from running Jekyll processing
+      # The .nojekyll file must be present in the deployment folder (out/)
+      - name: Add .nojekyll
+        run: touch out/.nojekyll
+
+      # 6. Deploy the static content to the gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The directory created by 'next build' when output: 'export' is used
+          publish_dir: ./out

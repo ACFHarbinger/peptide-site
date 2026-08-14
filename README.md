@@ -1,8 +1,10 @@
 <div align="center">
 
+<img alt="PepCore Labs" src="assets/icons/logo-card.svg" width="420">
+
 # Peptide Site
 
-**Peptide research site—statically exported and deployed to GitHub Pages.**
+**PepCore Labs — a research-peptide storefront, statically exported and deployed to GitHub Pages.**
 
 <a href="https://acfharbinger.github.io/peptide-site/"><img alt="Live Site" src="https://img.shields.io/badge/live%20site-acfharbinger.github.io-2ea44f?logo=github&logoColor=white"></a>
 <a href="https://github.com/ACFHarbinger/peptide-site/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ACFHarbinger/peptide-site/actions/workflows/ci.yml/badge.svg"></a>
@@ -15,7 +17,7 @@
 <a href="https://react.dev/"><img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white"></a>
 <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white"></a>
 <a href="https://tailwindcss.com/"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white"></a>
-<a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.11+-3776ab?logo=python&logoColor=white"></a>
+<a href="https://astro.build/"><img alt="Astro" src="https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white"></a>
 
 <br>
 
@@ -24,54 +26,58 @@
 <a href="https://mswjs.io/"><img alt="MSW" src="https://img.shields.io/badge/MSW-FF6A33?logo=mockserviceworker&logoColor=white"></a>
 <a href="https://www.cypress.io/"><img alt="Cypress" src="https://img.shields.io/badge/Cypress-17202C?logo=cypress&logoColor=white"></a>
 <a href="https://eslint.org/"><img alt="ESLint" src="https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white"></a>
-<a href="https://github.com/astral-sh/uv"><img alt="uv" src="https://img.shields.io/badge/managed%20by-uv-261230.svg"></a>
-<a href="https://github.com/astral-sh/ruff"><img alt="Ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json"></a>
-<a href="https://jupyter.org/"><img alt="Jupyter" src="https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white"></a>
 
 </div>
 
 ---
 
+## About
+
+PepCore Labs sells research peptides (GLP-1 agonists, growth hormone/antiaging compounds, cosmetic/longevity peptides, healing & recovery, weight-loss stacks, NAD+ blends, and general lab essentials) to qualified researchers in the EU. **Products are for laboratory/research use only** — not for human, veterinary, or household use. That framing (age gate, "Research Use Only" messaging, no dosage/medical-use instructions) is a fixed constraint on this codebase, not just marketing copy: it must be preserved in every catalog, cart, and content surface.
+
+The site is being rebuilt from a static HTML/CSS/vanilla-JS skeleton into a Next.js + TypeScript + React application while keeping the same static-export → GitHub Pages deploy model.
+
 ## Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Content:** Markdown, parsed with [`gray-matter`](https://github.com/jonschlinkert/gray-matter) and [`remark`](https://github.com/remarkjs/remark)
-- **Testing:** [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (unit/integration) + [MSW](https://mswjs.io/) (network mocking) · [Cypress](https://www.cypress.io/) (e2e/smoke)
-- **Linting:** [ESLint](https://eslint.org/) (`eslint-config-next`)
+- **Framework:** [Next.js](https://nextjs.org/) 14 (App Router, `output: 'export'`) + [React](https://react.dev/) 18 + [TypeScript](https://www.typescriptlang.org/) 5 (`strict: true`)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) 3
+- **State:** [Redux](https://redux.js.org/) / `react-redux` (cart, catalog filters, and other cross-route state)
+- **Research/content section:** an [Astro](https://astro.build/) island (`src/frameworks/astro`, built into `public/astro-island`) combined with [Framer Motion](https://www.framer.com/motion/) for the lab-testing/purity and science-background content — kept separate from the main storefront app shell
+- **Forms:** [`@tanstack/react-form`](https://tanstack.com/form)
 - **Icons:** [lucide-react](https://lucide.dev/)
-- **Research workspace:** [Python](https://www.python.org/) 3.11+ managed with [uv](https://github.com/astral-sh/uv), used for the analysis behind some reports
+- **Testing:** [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (unit/integration) + [MSW](https://mswjs.io/) (network mocking) · [Cypress](https://www.cypress.io/) (e2e/smoke)
+- **Linting:** [ESLint](https://eslint.org/) (`eslint-config-next`), config re-exported from `stack/eslint/`
+- **Repo automation:** Python 3.11+ / [uv](https://github.com/astral-sh/uv) workspace under `git/` (commit-ticket linking, GitHub Project board sync — see `git/README.md`)
 
 ## Project Structure
 
 ```
 .
-├── app/                    # Next.js App Router: routes + layouts
-│   └── content/            # Markdown content, one folder per section
-│       ├── posts/
-│       ├── reports/
-│       ├── projects/
-│       ├── tools/
-│       ├── media/
-│       ├── about/
-│       └── other/
 ├── src/
-│   ├── components/         # React components (layout, ui, content wrappers)
-│   └── styles/
-├── lib/                    # Markdown loading/parsing helpers
+│   ├── index.html-derived markup, script.js, products.js, style.css
+│   │                        # legacy static skeleton, being ported to app/
+│   └── frameworks/astro/    # Astro + Framer Motion research/content island
+├── assets/                  # generated product "vial" icon SVGs
+├── tools/make_vials.py      # one-off generator for the SVG icons above
+├── stack/
+│   ├── next/                # next.config.js, re-exported at the repo root
+│   └── eslint/               # eslint.config.js, re-exported at the repo root
+├── infra/                   # optional self-host tooling (not used by the
+│   ├── docker/               # default GitHub Pages deploy)
+│   ├── nginx/
+│   ├── ansible/
+│   └── terraform/
+├── git/                      # local git automation (hooks, backlog sync,
+│                              # commit-ticket linking) — see git/README.md
+├── .devcontainer/            # Node.js dev container
 ├── test/
-│   ├── unit/               # Vitest + Testing Library specs, mirrors src/components/
-│   ├── integration/        # Vitest + Testing Library + MSW specs
-│   └── cypress/            # e2e/ (one spec per section) + smoke/
-├── infra/                  # Optional self-hosting / alt-deploy tooling
-│   ├── global/             # External (public-facing) deploy & host configs
-│   ├── private/            # Internal (developer-only) tooling
-│   ├── cloud/              # Managed cloud static-host configs
-│   └── server/             # nginx / Envoy reverse-proxy configs
-├── notebooks/              # Python/uv workspace for report research
-├── docs/moon/research/     # Longer design/research write-ups
-└── public/                 # Static assets
+│   ├── unit/                 # Vitest + Testing Library
+│   ├── integration/          # Vitest + Testing Library + MSW
+│   └── cypress/              # e2e/ + smoke/
+└── public/                   # static assets served as-is
 ```
+
+`app/` (Next.js App Router routes/layouts) doesn't exist yet — the React/TypeScript port is in progress; `src/`'s vanilla `script.js`/`products.js`/`style.css` are the current source of truth for catalog data and cart/age-gate behavior until they're ported.
 
 ## Getting Started
 
@@ -109,256 +115,36 @@ npm run cypress:e2e      # Cypress: test/cypress/e2e/ only
 npm run cypress:smoke    # Cypress: test/cypress/smoke/ only
 ```
 
-Cypress runs against a served build, so run `npm run build && npm start` (or `npm run dev`) in another terminal first — see `test/cypress/cypress.config.js` for the `baseUrl`. `npm run build`'s `postbuild` step symlinks `out/peptide-site -> .` so `npm start` (a plain static file server) answers under `/peptide-site`, matching how GitHub Pages actually serves the site.
-
-## Notebooks
-
-`notebooks/` is a standalone Python workspace (not part of the site build) used to run the analysis behind some reports:
-
-```bash
-cd notebooks
-uv sync --extra dev
-uv run jupyter lab
-```
+Cypress runs against a served build — run `npm run build && npm start` (or `npm run dev`) in another terminal first.
 
 ## Deployment
 
-Pushing to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which builds the static export and publishes `out/` to the `gh-pages` branch via [`peaceiris/actions-gh-pages`](https://github.com/peaceiris/actions-gh-pages). [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs lint/typecheck/unit/e2e on every push and PR.
+Pushing to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which builds the static export and publishes `out/` to the `gh-pages` branch. [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs lint/typecheck/unit/e2e on every push and PR. Equivalent workflows are mirrored under `.gitlab/`, `.gitea/`, and `.forgejo/` for other forges.
 
-Optional alternatives to GitHub Pages (not used by the default workflow) live under [`infra/`](infra/README.md):
+Optional alternatives to GitHub Pages (not used by the default workflow) live under [`infra/`](infra/):
 
 | Path | Purpose |
 | --- | --- |
-| [`infra/docker/`](infra/docker/) | Build + serve the export with Docker Compose / nginx |
+| [`infra/docker/`](infra/docker/) | Build + serve the export with Docker Compose / nginx; placeholder for an optional future orders/checkout API backend |
 | [`infra/nginx/`](infra/nginx/) | Standalone nginx configs for the `out/` export |
-| [`infra/ansible/`](infra/ansible/) | Deploy the site container on a plain host |
-| [`infra/terraform/`](infra/terraform/) | Cloud provisioning (e.g. ECR) for the container image |
+| [`infra/ansible/`](infra/ansible/) | Deploy the site (and optional backend) on a plain host |
+| [`infra/terraform/`](infra/terraform/) | Cloud provisioning placeholder |
 
-Example local self-host:
+## Content constraints
 
-```bash
-docker compose -f infra/docker/docker-compose.yml up --build
-```
+This is a research-use storefront, not a general content site:
+
+- Never introduce human-dosing instructions, medical claims, or language implying products are approved/safe for human consumption.
+- Keep the existing "Research Use Only" / EU / age-gate framing consistent across the catalog, cart, and any new content (including the Astro research section).
+- Substantial new marketing/product copy should be flagged for review rather than freelanced.
+
+## Git workflow
+
+- Branch from `main`: `feature/<short-description>` or `fix/<short-description>`.
+- Small, logical, dependency-ordered commits — one concern per commit. [Conventional Commits](https://www.conventionalcommits.org/) style (`feat(scope): ...`, `fix(scope): ...`, `docs(scope): ...`).
+- `pre-commit install` (see `.pre-commit-config.yaml`) runs ESLint (blocking) and `tsc --noEmit` (advisory) before each commit.
+- `git/hooks/` (installed via `bash git/hooks/install.sh`) additionally links commits to GitHub Project board tickets — see [`git/README.md`](git/README.md).
 
 ## License
 
 [AGPL-3.0](LICENSE)
-
----
-
-Get help: [GitHub Discussions](https://github.com/orgs/skills/discussions/categories/peptide-site) &bull; [GitHub Status](https://www.githubstatus.com/)
-
-## Documentation website
-
-The documentation website is this Next.js application. Markdown content is read during the Next.js build and emitted as static HTML, so documentation deploys to GitHub Pages without a runtime database.
-
-### Launch locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000/` for local development. For a production-like static export (with `/peptide-site` base path):
-
-```bash
-npm run build
-npm start
-```
-
-After `npm run build && npm start`, open `http://localhost:3000/peptide-site/`. The `postbuild` script creates `out/peptide-site -> .` so static serving matches GitHub Pages.
-
-### Authoring a report
-
-1. Choose the section matching visitor intent.
-2. Create a Markdown file with stable filename and valid front matter.
-3. Write the claim, assumptions, evidence, limitations, and next action before adding effects.
-4. Link local figures and licensed assets with stable relative paths.
-5. Run development, typecheck, tests, build, and benchmark.
-6. Add a roadmap entry when the report introduces a new interactive commitment.
-
-Do not put secrets, private API responses, unlicensed images, or notebook runtime code in a page. A private experiment needs a reproducible public summary or labelled recorded result.
-
-### Front matter
-
-```yaml
-title: A descriptive visitor-facing title
-date: 2026-08-08
-description: A one-sentence summary used in indexes and metadata.
-tags:
-  - optimization
-  - machine-learning
-```
-
-Keep titles concise for cards and browser tabs. Use stable lowercase tags. Dates represent publication or substantive revision.
-
-## Project structure in detail
-
-```text
-.
-├── app/                         # Next.js routes, layouts, and content pages
-├── benchmark/                   # static export performance harness
-│   ├── measure.mjs
-│   └── README.md
-├── docs/                        # architecture, testing, standards, moon roadmaps
-│   ├── ARCHITECTURE.md
-│   ├── adr/
-│   └── moon/{research,roadmaps}/
-├── infra/                       # optional self-host (not default GitHub Pages)
-│   ├── docker/                  # Compose build + nginx serve of out/
-│   ├── nginx/                   # standalone nginx configs
-│   ├── ansible/                 # host deploy for the site container
-│   └── terraform/               # cloud provisioning helpers (e.g. ECR)
-├── lib/                         # build-time Markdown/front-matter helpers
-├── notebooks/                   # independent Python/uv research workspace
-├── public/                      # static, licensed browser assets
-├── src/                         # components, state, interfaces, simulations
-│   ├── aurelia/                 # optional Aurelia islands
-│   ├── components/              # audio, books, canvas, games, graph, image,
-│   │   ├── maps/ models/ routes/ video/
-│   │   ├── layout/ ui/
-│   │   └── ...
-│   ├── configs/constants/context/enums/hooks/interfaces/
-│   ├── redux/ routes/ types/ utils/
-│   └── simulations/{context,generator,repository,scenarios}/
-├── test/{unit,integration,cypress}/
-└── package.json
-```
-
-### Choosing a source directory
-
-- Put a shared type in `src/interfaces`.
-- Put a cross-route preference in `src/redux`.
-- Put a primitive in `src/components/ui`.
-- Put a domain feature in its matching `src/components` subdirectory.
-- Put deterministic data in `src/simulations/scenarios`.
-- Put simulation contracts in `src/simulations/repository`.
-- Put lifecycle orchestration in `src/simulations/context`.
-- Put pure transformations in `src/utils`.
-- Put route composition in `app/` or `src/routes`.
-
-Avoid adding a generic `components/interactive` directory. Extract the smallest shared contract or hook when a feature crosses domains, while leaving rendering with the owning domain.
-
-## Interactive research features
-
-| Area | Current foundation | Planned slice |
-| --- | --- | --- |
-| Fleet routing | SVG/canvas routes and deterministic convergence | playback, constraints, solver/Pareto comparisons |
-| Machine learning | spectrum and research visual language | policy replay, model cards, local fixtures |
-| Game development | prototype card and case-study framing | isolated playable mechanic and devlog graph |
-| 3D | capability-aware procedural hero model | reusable glTF viewer and quality tiers |
-| 360 media | static-first roadmap contract | panorama room with hotspot list |
-| Reading/media | shelf, mosaic, reel, and content routes | source graph and timeline |
-| Audio | static spectrum presentation | explicit-gesture Web Audio analysis |
-
-Every feature begins with a semantic fallback and visitor question. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/moon/roadmaps/research_derived_interactions.md`](docs/moon/roadmaps/research_derived_interactions.md).
-
-## Full quality workflow
-
-```bash
-npm run lint
-npx tsc --noEmit --incremental false
-npm test
-npm run build
-npm run benchmark
-```
-
-For browser smoke tests, run `npm run build` and `npm start`, then use `npm run cypress:smoke` in another terminal. The benchmark requires `out/`; it writes ignored `benchmark/results/latest.json` with export bytes, JavaScript/CSS totals, route responses, largest assets, and budget checks. It does not measure real-user Web Vitals or GPU memory.
-
-## Benchmark interpretation
-
-Investigate failures by checking eager dependencies, media sizes, optional-island boundaries, duplicated fallbacks, and documented value. Initial guardrails are 200 kB JavaScript, 80 kB CSS, 2 MB homepage transfer, 3 MB route response, and 1 MB largest asset. Exceptions need a reduced/static alternative and follow-up issue.
-
-## Roadmap and issue workflow
-
-1. Find the workstream in [`docs/moon/ROADMAP.md`](docs/moon/ROADMAP.md).
-2. Read its detailed file under [`docs/moon/roadmaps/`](docs/moon/roadmaps/).
-3. Create or update the matching GitHub issue and project item.
-4. Implement the smallest fallback-first slice.
-5. Add tests and benchmark evidence.
-6. Update status, changelog, architecture notes, and issue comments.
-7. Commit with a focused message.
-
-Use `Backlog` for unstarted work, `In progress` for an active or partial slice, `In review` for a finished change awaiting review, and `Done` only when acceptance criteria and evidence are complete.
-
-## Git workflow
-
-```bash
-git status
-git diff --check
-git add <files>
-git commit -m "feat: describe the visitor-facing change"
-```
-
-Do not commit `out/`, `.next/`, `tsconfig.tsbuildinfo`, benchmark result JSON, screenshots, videos, local credentials, or notebook caches. Do commit source fixtures, documentation, and reproducibility instructions.
-
-## Environment and configuration
-
-The website has no required runtime environment variables. `stack/next/next.config.js (re-exported at root)` defines the static export and GitHub Pages base path. Browser-only APIs belong inside client components and effects, never during static rendering.
-
-If an optional integration needs a token, prefer a public build-time fixture or remove it from the default site. Never place a secret in `NEXT_PUBLIC_*`, Markdown, `public/`, or a committed notebook.
-
-## Content and media licensing
-
-Before adding an image, model, panorama, audio clip, font, or video:
-
-- record creator, source URL, license, and retrieval date;
-- confirm redistribution is allowed;
-- provide alt text, captions, poster, or transcript;
-- provide a low-cost/static alternative;
-- avoid trackers or remote code;
-- keep private research data out of public assets.
-
-## Accessibility expectations
-
-The site supports keyboard navigation, visible focus, semantic landmarks, reduced motion, light/dark themes, text summaries, list/table equivalents, and graceful no-WebGL behavior. Interactive charts must not require hover. Audio requires a user gesture. 3D controls need reset/pause and an ordered annotation list. An effect that cannot meet these requirements is optional research, not a default feature.
-
-## Troubleshooting quick reference
-
-| Symptom | Likely cause | Fix |
-| --- | --- | --- |
-| `/` is blank in dev | Base path omitted | Open `/peptide-site/`. |
-| `npm start` cannot find export | Build has not run | Run `npm run build`. |
-| Benchmark says `out/` missing | No production export | Run `npm run benchmark:build`. |
-| TypeScript sees stale paths | Simulation directory moved | Check `repository` and `scenarios`. |
-| Three.js view is absent | Capability/reduced tier/failure | Use static poster and inspect console. |
-| Cypress cannot connect | Server is not running | Run `npm start` in another terminal. |
-| Markdown route is missing | Invalid slug/front matter | Inspect filename and run build. |
-| Vitest network warning | MSW rejected unhandled request | Add a fixture only when intended. |
-
-## Documentation index
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Moon master roadmap](docs/moon/ROADMAP.md)
-- [Research-derived roadmap](docs/moon/roadmaps/research_derived_interactions.md)
-- [Interactive research report](docs/moon/research/Interactive%20Features%20and%20Visual%20Storytelling%20Research.md)
-- [Testing guide](docs/TESTING.md)
-- [Development guide](docs/DEVELOPMENT.md)
-- [Documentation standards](docs/DOCUMENTATION_STANDARDS.md)
-- [Dependency policy](docs/DEPENDENCY_POLICY.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-
-## Maintainer release checklist
-
-- [ ] Content builds with no missing static routes.
-- [ ] Lint and typecheck pass.
-- [ ] Unit and integration tests pass.
-- [ ] Browser smoke tests pass against the production export.
-- [ ] Benchmark budgets are green or exceptions documented.
-- [ ] New assets have license/provenance records.
-- [ ] Reduced-motion, keyboard, no-WebGL, and failure paths exercised.
-- [ ] Changelog and roadmap status are current.
-- [ ] GitHub issue/project status reflects reality.
-- [ ] Commit history explains material architectural decisions.
-
-## Why this structure is explicit
-
-This is a organization site and a public notebook for engineering work. Explicit boundaries show a beautiful result without hiding assumptions, costs, or limitations. A new route story can begin as Markdown and SVG, grow into a focused React island, and only then become a 3D, audio, map, or GPU experiment if evidence and budgets justify it.
-
-That progression protects readers on older devices, keeps GitHub Pages reliable, and makes research claims easier to audit. It gives collaborators a predictable place to add work: contracts in interfaces, behavior in the owning domain, computation in simulations/workers, and evidence in reports and roadmaps.
-
-## README history
-
-| Date | Revision | Change |
-| --- | --- | --- |
-| 2026-08-08 | R3 | Expanded structure, launch instructions, benchmark workflow, feature guidance, issue workflow, accessibility, licensing, troubleshooting, and release procedures. |

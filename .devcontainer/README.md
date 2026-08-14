@@ -1,15 +1,15 @@
 # Dev Container
 
-This Dev Container provisions the **Android** toolchain only: Android SDK cmdline-tools, JDK 17, and emulator dependencies (see `Dockerfile`). Opening it gets you a working `android/` build/test environment via VS Code's "Reopen in Container".
+This Dev Container provides a Node.js 20 development environment for peptide-site, a Next.js, React, TypeScript, and Tailwind CSS application.
 
-## iOS is not supported here
+It includes Git, Python 3 with pip, and pre-commit so the repository's JavaScript and Python tooling scripts can run in the container.
 
-Xcode and the iOS Simulator only run on macOS — there is no Linux (or Docker-on-Linux) way to build, test, or run the `ios/` app. This is an Apple platform restriction, not a limitation of this container's configuration; no Dev Container image can work around it.
+## Getting started
 
-To work on `ios/MyGame`, you need one of:
+1. Install the VS Code Dev Containers extension.
+2. Open this repository in VS Code.
+3. Choose **Dev Containers: Reopen in Container** from the Command Palette.
 
-- A native macOS machine with Xcode 15+ installed, or
-- A macOS CI runner (already wired up for this repo — see `.github/workflows/ci.yml`'s `ios-test` job on `macos-latest`), or
-- A macOS cloud/remote-build service, if your organization has one.
+After the container is created, its setup command runs `npm install` and `pre-commit install`. You can then use the project scripts, such as `npm run dev`, `npm run build`, and `npm run lint`, from the integrated terminal.
 
-See [`docs/DEVELOPMENT.md`](../docs/DEVELOPMENT.md#ios-ios) for iOS setup once you have a macOS host.
+The container workspace is `/workspaces/peptide-site` and commands run as the non-root `vscode` user.

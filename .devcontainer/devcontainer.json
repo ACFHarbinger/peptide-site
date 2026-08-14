@@ -1,31 +1,22 @@
 {
-    "name": "Mobile Fortress Dev Environment (Android only — see .devcontainer/README.md for iOS)",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "fwcd.kotlin",
-                "vscjava.vscode-gradle",
-                "adelphes.android-dev-ext",
-                "mathiasfrohlich.kotlin",
-                "ms-azuretools.vscode-docker",
-                "editorconfig.editorconfig"
-            ],
-            "settings": {
-                "editor.formatOnSave": true,
-                "[kotlin]": {
-                    "editor.tabSize": 4
-                }
-            }
-        }
-    },
-    "containerEnv": {
-        "ANDROID_SDK_ROOT": "/opt/android-sdk",
-        "ANDROID_HOME": "/opt/android-sdk"
-    },
-    "postCreateCommand": "yes | sdkmanager --licenses > /dev/null && ./gradlew --version && pre-commit install",
-    "remoteUser": "vscode"
+  "name": "peptide-site (Node.js)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-typescript-next",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "postCreateCommand": "npm install && pre-commit install",
+  "remoteUser": "vscode"
 }

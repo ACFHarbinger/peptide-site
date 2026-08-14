@@ -8,7 +8,7 @@
 - [ ] Tools
 - [ ] Media
 - [ ] About / Other
-- [ ] Notebooks (`notebooks/`)
+- [ ] Repo automation (`git/`)
 - [ ] Build / tooling / CI
 - [ ] Other / unknown
 

@@ -39,25 +39,25 @@ repos:
         files: \.(ts|tsx)$
         pass_filenames: false
 
-  # ── Python (notebooks/): ruff (blocking) + mypy (advisory) ───────────────
+  # ── Python (git/ automation workspace): ruff (blocking) + mypy (advisory) ─
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.5.0
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
         types_or: [python, pyi]
-        files: ^notebooks/
+        files: ^git/
       - id: ruff-format
         types_or: [python, pyi]
-        files: ^notebooks/
+        files: ^git/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.10.1
     hooks:
       - id: mypy
-        name: mypy (notebooks/)
+        name: mypy (git/)
         args: [--ignore-missing-imports, --no-error-summary]
-        files: ^notebooks/.*\.py$
+        files: ^git/.*\.py$
 
   # ── Markdown: link checker ───────────────────────────────────────────────
   - repo: https://github.com/lycheeverse/lychee
@@ -71,10 +71,3 @@ repos:
           - --include-verbatim
         files: \.(md|markdown)$
         pass_filenames: true
-
-  # ── Jupyter: strip notebook output from git ──────────────────────────────
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.7.1
-    hooks:
-      - id: nbstripout
-        files: ^notebooks/.*\.ipynb$

@@ -8,7 +8,7 @@
 
 - [ ] Site content (`app/content/**`)
 - [ ] Components / styling (`src/`)
-- [ ] Notebooks / research (`notebooks/`, `docs/moon/research/`, `docs/moon/reports/`)
+- [ ] Repo automation (`git/`)
 - [ ] Tooling / CI / docs
 
 ## Type of Change

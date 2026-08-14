@@ -30,7 +30,7 @@ Thank you for your interest in contributing! This document covers setup, style, 
 ### 1.1 Prerequisites
 
 - Git, [Node.js](https://nodejs.org/) >= 20, `npm`.
-- For `notebooks/`: `python` (>= 3.11) + [`uv`](https://github.com/astral-sh/uv).
+- For the [`git/`](../git/) automation workspace or [`scripts/make_vials.py`](../scripts/make_vials.py): `python` (>= 3.11) + [`uv`](https://github.com/astral-sh/uv).
 - `pre-commit` (`pip install pre-commit && pre-commit install`).
 
 ### 1.2 Clone and bootstrap
@@ -44,11 +44,11 @@ npm run dev
 
 ## 2. Development Setup
 
-The site lives at the repo root (`app/`, `src/`, `lib/`) as a single Next.js app; `notebooks/` is a separate `uv`-managed Python workspace (`cd notebooks && uv sync --extra dev`).
+The site lives at the repo root (`app/` once scaffolded, `src/`) as a single Next.js app; [`git/`](../git/) is a separate `uv`-managed Python workspace for repo automation (`cd git && uv sync`).
 
 ## 3. Code Style Guidelines
 
-Follow the rules in [`.agent/rules/`](../.agent/rules/), primarily [`typescript_react.md`](../.agent/rules/typescript_react.md) and [`python.md`](../.agent/rules/python.md). Linting/formatting runs automatically via `.pre-commit-config.yaml` — run `pre-commit run --all-files` before pushing.
+Follow the rules in [`.agent/rules/`](../.agent/rules/), primarily [`typescript_react.md`](../.agent/rules/typescript_react.md). Python in [`git/`](../git/) is linted with ruff (blocking) and mypy (advisory) via `.pre-commit-config.yaml` — run `pre-commit run --all-files` before pushing.
 
 ## 4. Git Workflow
 

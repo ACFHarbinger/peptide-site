@@ -10,7 +10,7 @@ node_modules
 .next
 out
 
-# Python (notebooks/)
+# Python (git/ automation workspace)
 .venv
 **/__pycache__
 *.py[cod]

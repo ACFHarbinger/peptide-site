@@ -66,13 +66,10 @@ jobs:
           # cypress.config.js's specPattern already covers both e2e/ and
           # smoke/, so this one run covers both suites.
 
-  notebooks:
-    name: Lint notebooks workspace
+  git-tooling:
+    name: Lint git/ automation workspace
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv sync --extra dev
-        working-directory: notebooks
-      - run: uv run ruff check .
-        working-directory: notebooks
+      - run: uvx ruff check git/

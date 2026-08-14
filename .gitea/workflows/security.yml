@@ -22,7 +22,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv sync --extra dev
-        working-directory: notebooks
-      - run: uv run pip-audit
-        working-directory: notebooks
+      - run: uv pip compile git/pyproject.toml -o /tmp/git-requirements.txt
+      - run: uvx pip-audit -r /tmp/git-requirements.txt

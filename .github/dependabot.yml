@@ -9,7 +9,7 @@ updates:
         patterns: ["*"]
 
   - package-ecosystem: "uv"
-    directory: "/notebooks"
+    directory: "/git"
     schedule:
       interval: "weekly"
 

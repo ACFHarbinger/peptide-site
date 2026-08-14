@@ -40,14 +40,12 @@ e2e:
     # one run covers both suites.
     - npx start-server-and-test start http://localhost:3000/peptide-site "npm run cypress:run"
 
-lint-notebooks:
+lint-git-tooling:
   stage: test
   image: python:3.12
   script:
     - pip install uv
-    - cd notebooks
-    - uv sync --extra dev
-    - uv run ruff check .
+    - uvx ruff check git/
 
 # ==========================================
 # STAGE: SECURITY (security.yml)
@@ -69,9 +67,8 @@ security-pip-audit:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
     - pip install uv
-    - cd notebooks
-    - uv sync --extra dev
-    - uv run pip-audit
+    - uv pip compile git/pyproject.toml -o /tmp/git-requirements.txt
+    - uvx pip-audit -r /tmp/git-requirements.txt
 
 # ==========================================
 # STAGE: DOCS (docs.yml)

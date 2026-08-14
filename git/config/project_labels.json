@@ -3,8 +3,8 @@
   "description": "Canonical label taxonomy for peptide-site. Consumed by sync_backlog.py to validate/create labels and by agent_tools.py to route tickets to Project V2 fields.",
   "components": [
     { "name": "component:site",         "color": "3178C6", "description": "app/, src/, lib/ — the Next.js site" },
-    { "name": "component:content",      "color": "0E8A16", "description": "app/content/ — posts, reports, projects, tools, media, about, other" },
-    { "name": "component:notebooks",    "color": "3776AB", "description": "notebooks/ Python workspace" },
+    { "name": "component:catalog",      "color": "0E8A16", "description": "Product catalog data and PDP/catalog UI" },
+    { "name": "component:git-tooling",  "color": "3776AB", "description": "git/ Python automation workspace" },
     { "name": "component:ci-automation","color": "C5DEF5", "description": "GitHub Actions, bots, and repo automation" },
     { "name": "component:docs",         "color": "BFD4F2", "description": "Documentation and ADRs" }
   ],

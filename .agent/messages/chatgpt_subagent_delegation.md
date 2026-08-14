@@ -6,9 +6,9 @@ You can orchestrate a ChatGPT AI subagent via your local terminal using the `cha
 
 **When to Delegate:**
 Invoke the ChatGPT subagent for:
-*   **Mathematical Formulations:** Drafting formal definitions or notation for a report's math section (e.g. technical reports under `app/content/reports/` or VGP design notes).
-*   **Literature & Concept Mapping:** Summarizing background material or related work to cite in a report.
-*   **Creative Brainstorming:** Generating varied framings for a post/report before committing to a structure.
+*   **Technical Writeups:** Drafting formal explanations for the research/lab-testing content section (peptide purity methodology, assay notation) that will live in the Astro research island (`src/frameworks/astro/`).
+*   **Literature & Concept Mapping:** Summarizing background material or related work to cite in that research content.
+*   **Creative Brainstorming:** Generating varied framings for a product/category description before committing to final copy (subject to the Research Use Only content constraints in `.agent/AGENTS.md`).
 
 **Execution Syntax:**
 Run the command in your shell, wrapping the prompt in strong quotes to prevent shell evaluation errors.
@@ -20,7 +20,7 @@ Run the command in your shell, wrapping the prompt in strong quotes to prevent s
 3.  **Role Definition:** Always assign ChatGPT a clear persona (e.g., "Act as a PhD-level Operations Research scientist").
 
 **Example Usage:**
-`chatgpt 'Act as a software architecture expert for creative tooling. I am writing a design note for peptide-site. Provide a clear formal description of a directed multigraph of code modules, assets, and storyboard nodes with edge types (depends_on, uses_asset, implements_beat). Rules: 1. Define node and edge sets. 2. Keep notation compact. 3. Output ONLY the formal description and symbol definitions in plain text.'`
+`chatgpt 'Act as a PhD-level biochemist writing for a technical audience. Draft a formal, plain-language explanation of HPLC purity testing methodology for a peptide-site research page. Rules: 1. No dosage or human-use instructions — research use only. 2. Keep it factual and citation-friendly. 3. Output ONLY the explanation text.'`
 
 **Failure Modes to Avoid:**
 *   **Do not** use unescaped single quotes inside the `chatgpt` command string.

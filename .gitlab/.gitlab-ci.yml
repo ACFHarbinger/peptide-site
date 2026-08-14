@@ -5,6 +5,9 @@ stages:
   - benchmark
   - sync
 
+variables:
+  NEXT_TELEMETRY_DISABLED: "1"
+
 # ==========================================
 # STAGE: TEST (ci.yml)
 # ==========================================

@@ -14,7 +14,7 @@ export const Hero: React.FC<HeroProps> = ({
   titleLine1 = 'Premium research.',
   titleLine2 = 'Real results.',
   subtitle = 'Ultra-pure, lab-tested compounds trusted by researchers across the EU. No fillers. No gimmicks. Just science.',
-  shopUrl = '#catalog',
+  shopUrl = '/catalog',
   testingUrl = '#testing',
 }) => {
   return (

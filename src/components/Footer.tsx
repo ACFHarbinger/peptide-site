@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
             <a href="#best-sellers" className="hover:text-white">
               Best Sellers
             </a>
-            <a href="#catalog" className="hover:text-white">
+            <a href="/catalog" className="hover:text-white">
               All Peptides
             </a>
             <a href="#cart" className="hover:text-white">

@@ -225,7 +225,7 @@ export const BestSellersCarousel: React.FC<BestSellersCarouselProps> = ({
                   </button>
 
                   <a
-                    href="#catalog"
+                    href="/catalog"
                     className="text-xs font-extrabold text-[#432D76] hover:text-[#8f67ff] transition-colors"
                   >
                     View Product →

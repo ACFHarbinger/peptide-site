@@ -66,7 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
               Best Sellers
             </a>
             <a
-              href="#catalog"
+              href="/catalog"
               className="text-sm font-bold text-[#4d4762] hover:text-[#432D76] transition-colors"
             >
               Catalog

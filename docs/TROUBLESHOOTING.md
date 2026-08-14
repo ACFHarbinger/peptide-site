@@ -72,7 +72,7 @@ Keep Firebase initialization in client-side code and keep configuration compatib
 
 ### Cypress cannot connect to the site
 
-Cypress does not start the application server itself. Run a development server or serve an exported build in another terminal, then check the `baseUrl` and port in `test/cypress/cypress.config.js`. Local `next dev` uses no `/peptide-site` base path, so a test URL copied from GitHub Pages can fail locally.
+Cypress does not start the application server itself. Run a development server or serve an exported build in another terminal, then check the `baseUrl` and port in `test/cypress/cypress.config.cjs`. Local `next dev` uses no `/peptide-site` base path, so a test URL copied from GitHub Pages can fail locally.
 
 ### Cypress sees a 404, wrong page, or missing static asset
 

@@ -2,6 +2,7 @@
   "name": "peptide-site",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Website for research peptides. Built with Next.js, React, and TypeScript; deployed to GitHub Pages.",
   "author": "Tuggooo",
   "keywords": [
@@ -19,6 +20,7 @@
     "postbuild": "ln -sfn . out/peptide-site",
     "start": "npx serve@latest out",
     "lint": "next lint",
+    "validate:catalog": "node scripts/validate-catalog.mjs",
     "deploy": "next build && touch out/.nojekyll",
     "test": "vitest run",
     "test:watch": "vitest",

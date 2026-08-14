@@ -10,7 +10,7 @@ peptide-site is a statically exported Next.js storefront. Tests protect **catalo
 | Smoke | `test/cypress/smoke/` | Cypress | `npm run cypress:smoke` |
 | All Vitest | `test/unit/` + `test/integration/` | Vitest | `npm test` / `npm run test:watch` |
 
-Config: [`vitest.config.ts`](../vitest.config.ts) (jsdom, [`test/vitest.setup.ts`](../test/vitest.setup.ts)), [`test/cypress/cypress.config.js`](../test/cypress/cypress.config.js). Setup already enables Testing Library’s jest-dom matchers and an in-memory `localStorage`. It also starts an MSW server from `test/integration/mocks/server` — add that module when the first integration test needs a network boundary.
+Config: [`vitest.config.ts`](../vitest.config.ts) (jsdom, [`test/vitest.setup.ts`](../test/vitest.setup.ts)), [`test/cypress/cypress.config.cjs`](../test/cypress/cypress.config.cjs). Setup already enables Testing Library’s jest-dom matchers and an in-memory `localStorage`. It also starts an MSW server from `test/integration/mocks/server` — add that module when the first integration test needs a network boundary.
 
 The directories are the contract; they may still be empty while the React port lands. New code should drop tests in the matching folder rather than inventing a fourth layer.
 
@@ -87,7 +87,7 @@ npm run cypress:e2e
 npm run cypress:smoke
 ```
 
-[`test/cypress/cypress.config.js`](../test/cypress/cypress.config.js) uses `CYPRESS_BASE_URL` if set, otherwise `http://localhost:3000/peptide-site` when `CI` is set, otherwise `http://localhost:3000`.
+[`test/cypress/cypress.config.cjs`](../test/cypress/cypress.config.cjs) uses `CYPRESS_BASE_URL` if set, otherwise `http://localhost:3000/peptide-site` when `CI` is set, otherwise `http://localhost:3000`.
 
 ## CI
 

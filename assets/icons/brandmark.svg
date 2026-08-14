@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- PepCore Labs Brandmark: Abstract Hexagonal Molecular Structure & Peptide 'P' Motif -->
+  <!-- Outer Hexagonal Molecular Shield -->
+  <polygon points="32,6 54.5,19 54.5,45 32,58 9.5,45 9.5,19" fill="#0F172A" />
+  
+  <!-- Subtle accent inner border -->
+  <polygon points="32,10 51,21 51,43 32,54 13,43 13,21" fill="none" stroke="#0284C7" stroke-width="1.5" stroke-opacity="0.5" />
+  
+  <!-- Peptide Chain "P" Structure (Bonds) -->
+  <path d="M 23 46 V 18 H 37 C 42 18 45 21 45 25.5 C 45 30 42 33 37 33 H 23" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Secondary Molecular Bond / Active Site Link -->
+  <path d="M 37 33 L 44 41" fill="none" stroke="#0D9488" stroke-width="3" stroke-linecap="round" />
+  
+  <!-- Molecular Nodes (Atoms/Peptide Termini) -->
+  <circle cx="23" cy="18" r="3.5" fill="#38BDF8" />
+  <circle cx="37" cy="18" r="3.5" fill="#38BDF8" />
+  <circle cx="45" cy="25.5" r="3.5" fill="#38BDF8" />
+  <circle cx="37" cy="33" r="3.5" fill="#38BDF8" />
+  <circle cx="23" cy="33" r="2.5" fill="#FFFFFF" />
+  <circle cx="23" cy="46" r="3.5" fill="#38BDF8" />
+  <circle cx="44" cy="41" r="3.5" fill="#10B981" />
+</svg>

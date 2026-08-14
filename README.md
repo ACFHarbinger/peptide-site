@@ -46,7 +46,7 @@ The site is being rebuilt from a static HTML/CSS/vanilla-JS skeleton into a Next
 - **Forms:** [`@tanstack/react-form`](https://tanstack.com/form)
 - **Icons:** [lucide-react](https://lucide.dev/)
 - **Testing:** [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (unit/integration) + [MSW](https://mswjs.io/) (network mocking) · [Cypress](https://www.cypress.io/) (e2e/smoke)
-- **Linting:** [ESLint](https://eslint.org/) (`eslint-config-next`), config re-exported from `stack/eslint/`
+- **Linting:** [ESLint](https://eslint.org/) (`.eslintrc.json` extending `next/core-web-vitals`)
 - **Repo automation:** Python 3.11+ / [uv](https://github.com/astral-sh/uv) workspace under `git/` (commit-ticket linking, GitHub Project board sync — see `git/README.md`)
 
 ## Project Structure
@@ -57,11 +57,12 @@ The site is being rebuilt from a static HTML/CSS/vanilla-JS skeleton into a Next
 │   ├── index.html-derived markup, script.js, products.js, style.css
 │   │                        # legacy static skeleton, being ported to app/
 │   └── frameworks/astro/    # Astro + Framer Motion research/content island
-├── assets/                  # generated product "vial" icon SVGs
-├── tools/make_vials.py      # one-off generator for the SVG icons above
-├── stack/
-│   ├── next/                # next.config.js, re-exported at the repo root
-│   └── eslint/               # eslint.config.js, re-exported at the repo root
+├── assets/
+│   ├── svgs/                # generated product "vial" icon SVGs
+│   └── icons/               # hand-authored brand/UI icon set
+├── scripts/make_vials.py    # one-off generator for the SVGs above
+├── stack/next/               # next.config.js, re-exported at the repo root
+├── .eslintrc.json            # ESLint config (extends next/core-web-vitals)
 ├── infra/                   # optional self-host tooling (not used by the
 │   ├── docker/               # default GitHub Pages deploy)
 │   ├── nginx/

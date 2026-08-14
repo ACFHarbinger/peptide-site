@@ -25,7 +25,7 @@ The Next.js dev server is `http://localhost:3000/` with an **empty** `basePath`.
 ```bash
 npm run build     # next build → out/  (postbuild symlinks out/peptide-site → .)
 npm start         # serve the export (npx serve out) — production-like, including /peptide-site
-npm run lint      # ESLint (eslint-config-next via stack/eslint/)
+npm run lint      # ESLint (.eslintrc.json extends next/core-web-vitals)
 npx tsc --noEmit  # TypeScript 5, strict
 ```
 

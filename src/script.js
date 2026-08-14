@@ -51,7 +51,7 @@
   function buildCatalog() {
     grid.innerHTML = '';
     PRODUCTS.forEach(function (prod) {
-      var img = 'assets/' + prod.i + '.svg';
+      var img = 'assets/svgs/' + prod.i + '.svg';
       var rows = prod.v.map(function (v) {
         var safeName = esc(prod.n);
         var safeSize = esc(v[0]);
@@ -211,14 +211,14 @@
 
   /* Best seller add buttons */
   var IMG = {
-    'CJC-1295 + IPA': 'assets/cjc-1295.svg'
+    'CJC-1295 + IPA': 'assets/svgs/cjc-1295.svg'
   };
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.add-btn');
     if (!btn) return;
     var name = btn.getAttribute('data-name');
     var price = parseFloat(btn.getAttribute('data-price'));
-    var img = IMG[name] || 'assets/' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.svg';
+    var img = IMG[name] || 'assets/svgs/' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.svg';
     addItem(name, null, price, img);
   });
 

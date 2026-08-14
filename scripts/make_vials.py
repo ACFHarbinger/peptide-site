@@ -1,7 +1,7 @@
 import os
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ASSETS = os.path.join(BASE, 'assets')
+ASSETS = os.path.join(BASE, 'assets', 'svgs')
 os.makedirs(ASSETS, exist_ok=True)
 
 
@@ -115,7 +115,7 @@ def vial(p):
            + ''.join(parts) + '</svg>')
     with open(os.path.join(ASSETS, f'{slug}.svg'), 'w', encoding='utf-8') as f:
         f.write(svg)
-    print(f'wrote assets/{slug}.svg')
+    print(f'wrote assets/svgs/{slug}.svg')
 
 
 for p in PRODUCTS:

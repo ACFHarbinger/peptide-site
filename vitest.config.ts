@@ -11,6 +11,7 @@ export default defineConfig({
       'test/unit/**/*.{test,spec}.{ts,tsx}',
       'test/integration/**/*.{test,spec}.{ts,tsx}',
     ],
+    passWithNoTests: true,
     globals: true,
   },
 });

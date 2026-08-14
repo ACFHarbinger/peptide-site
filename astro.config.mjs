@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config';
 
-// Builds the CoastalFlowField Astro island into public/astro-island for the Vue host.
-// base must align with SITE_BASE when deploying under a GitHub Pages project path.
+// peptide-site research/content island (lab-testing/purity write-ups, science
+// background). Built with Astro + Framer Motion into public/astro-island for
+// the Next.js host. base must align with SITE_BASE when deploying under a
+// GitHub Pages project path (e.g. /peptide-site/).
 const siteBase = process.env.SITE_BASE || '/';
 const islandBase = `${siteBase.replace(/\/?$/, '/')}astro-island`;
 

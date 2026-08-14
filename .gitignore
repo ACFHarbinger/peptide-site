@@ -1,0 +1,80 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jekyll generated files #
+##########################
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+
+# Bundler generated files #
+###########################
+.bundle/
+vendor/
+
+# Gems #
+########
+*.gem
+
+# Node package manager #
+###########################
+/**/node_modules
+
+# Next.js #
+###########################
+.next
+out
+*.tsbuildinfo
+
+# Cypress #
+###########################
+test/cypress/screenshots
+test/cypress/videos
+
+# Other #
+#########
+tmp
+.cache
+benchmark/results
+.vscode
+/**/gatsby-types.d.ts
+
+# Guide documents staged for the Docusaurus "guides" plugin (docs/website/scripts/sync-guides.mjs)
+.guides-content/

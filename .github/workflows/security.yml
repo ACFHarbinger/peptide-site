@@ -21,6 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv pip compile git/pyproject.toml -o /tmp/git-requirements.txt
       - run: uvx pip-audit -r /tmp/git-requirements.txt

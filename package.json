@@ -34,7 +34,7 @@
   "homepage": "https://github.com/ACFHarbinger/peptide-site.git",
   "dependencies": {
     "@tanstack/react-form": "^1.33.4",
-    "astro": "^7.2.0",
+    "astro": "^7.3.3",
     "framer-motion": "^13.0.0",
     "lucide-react": "^0.383.0",
     "next": "^14.2.3",
